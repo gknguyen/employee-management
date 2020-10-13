@@ -1,0 +1,3 @@
+node_modules/
+errorLog*.txt
+access*.log
