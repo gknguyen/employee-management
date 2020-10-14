@@ -17,7 +17,7 @@ Unit test report: mochawesome
 
 API test: Postman
 
-================================================================================================
+============================================================================
 APIs are store in Postman-APIs folder for testing.
 
 1./ login with API http://localhost:3000/auth/login
@@ -32,7 +32,7 @@ with JWT in the headers to get data in tree model from ceo to members (no JWT =>
 4./ call API http://localhost:3000/general/getLimit1500Members
 with JWT in the headers to get data with limit 1500 members (no JWT => unauthorized)
 
-================================================================================================
+============================================================================
 unit tests
 
 1./ run script "npm run test"
