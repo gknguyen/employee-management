@@ -1,14 +1,22 @@
 import STATUS_CODE from 'http-status';
 import { HTTPdata } from '../../../configs/interfaces';
+import { CEO } from '../../database/mysql/ceo/ceo.model';
 import ceoService from '../../database/mysql/ceo/ceo.services';
-import DepartmentModel from '../../database/mysql/department/department.model';
+import DepartmentModel, {
+  Department,
+} from '../../database/mysql/department/department.model';
+import departmentService from '../../database/mysql/department/department.services';
 import MemberModel from '../../database/mysql/member/member.model';
-import TeamMemberModel from '../../database/mysql/team.member/team.member.model';
-import TeamModel from '../../database/mysql/team/team.model';
+import TeamMemberModel, {
+  TeamMember,
+} from '../../database/mysql/team.member/team.member.model';
+import teamMemberService from '../../database/mysql/team.member/team.member.services';
+import TeamModel, { Team } from '../../database/mysql/team/team.model';
+import teamService from '../../database/mysql/team/team.services';
 
 class GeneralController {
-  /* ============================================================================================================================ */
-  getList = async () => {
+  /** ================================================================================== */
+  getMembersInTreeModel = async () => {
     const results = {
       code: 0,
       message: '',
@@ -16,9 +24,9 @@ class GeneralController {
     } as HTTPdata;
 
     try {
+      /** get data */
       const data = await ceoService.findManyAndCount({
         attributes: ['name'],
-        limit: 1500,
         include: [
           {
             model: DepartmentModel,
@@ -30,7 +38,7 @@ class GeneralController {
                 model: TeamModel,
                 as: 'teams',
                 required: true,
-                attributes: ['departmentId', 'project'],
+                attributes: ['project'],
                 include: [
                   {
                     model: TeamMemberModel,
@@ -41,7 +49,6 @@ class GeneralController {
                       {
                         model: MemberModel,
                         as: 'member',
-                        required: true,
                         attributes: ['name'],
                       },
                     ],
@@ -53,6 +60,7 @@ class GeneralController {
         ],
       });
 
+      /** return responses */
       if (data.rows && data.rows.length > 0) {
         results.code = STATUS_CODE.OK;
         results.message = 'successfully';
@@ -62,11 +70,87 @@ class GeneralController {
         };
         return results;
       } else {
-        results.code = STATUS_CODE.OK;
+        results.code = STATUS_CODE.PRECONDITION_FAILED;
         results.message = 'no result';
         results.data = [];
         return results;
       }
+    } catch (err) {
+      results.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
+      results.message = err.toString();
+      results.data = err;
+      return results;
+    }
+  };
+
+  /** ================================================================================== */
+  getLimit1500Members = async () => {
+    const results = {
+      code: 0,
+      message: '',
+      data: null,
+    } as HTTPdata;
+
+    try {
+      let memberNumber = 0;
+
+      /** get ceo */
+      const ceo = (await ceoService.findOne({
+        attributes: ['id', 'name'],
+      })) as CEO;
+
+      /** get the list of department manager */
+      const departmentList = (await departmentService.findMany({
+        attributes: ['id', 'manager'],
+        where: { ceoId: ceo.id },
+      })) as Department[];
+
+      /** get the list of team for each department manager */
+      let teamList: Team[] = [];
+      for (const department of departmentList) {
+        const teams = (await teamService.findMany({
+          attributes: ['id', 'project'],
+          where: { departmentId: department.id },
+        })) as Team[];
+        teamList = teamList.concat(teams);
+      }
+
+      /** get the list of team member for each team */
+      let teamMemberList: TeamMember[] = [];
+      for (const team of teamList) {
+        const teamMembers = (await teamMemberService.findMany({
+          attributes: ['id'],
+          where: { teamId: team.id },
+          include: [
+            {
+              model: MemberModel,
+              as: 'member',
+              attributes: ['id', 'name'],
+            },
+          ],
+        })) as TeamMember[];
+        teamMemberList = teamMemberList.concat(teamMembers);
+      }
+
+      /** calculate total number of members */
+      memberNumber += 1;
+      memberNumber += departmentList.length;
+      memberNumber += teamMemberList.length;
+
+      /** limit to 1500 members */
+      if (memberNumber > 1500) {
+        teamMemberList.splice(1500 - departmentList.length - 1);
+        memberNumber = 0;
+        memberNumber += 1;
+        memberNumber += departmentList.length;
+        memberNumber += teamMemberList.length;
+      }
+
+      /** return responses */
+      results.code = STATUS_CODE.OK;
+      results.message = 'successfully';
+      results.data = { memberNumber, ceo, departmentList, teamList, teamMemberList };
+      return results;
     } catch (err) {
       results.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
       results.message = err.toString();

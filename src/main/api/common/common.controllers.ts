@@ -14,8 +14,12 @@ import { Team } from '../../database/mysql/team/team.model';
 import teamService from '../../database/mysql/team/team.services';
 
 class CommonController {
-  /* ============================================================================================================================ */
-  createCEO = async () => {
+  /** ================================================================================== */
+  createCEO = async (
+    numberOfDepartment: number | null | undefined,
+    numberOfTeamPerDepartment: number | null | undefined,
+    numberOfMember: number | null | undefined,
+  ) => {
     const results = {
       code: 0,
       message: '',
@@ -23,6 +27,26 @@ class CommonController {
     } as HTTPdata;
 
     try {
+      /** check input */
+      if (!numberOfDepartment) {
+        results.code = STATUS_CODE.PRECONDITION_FAILED;
+        results.message = 'please input numberOfDepartment';
+        return results;
+      }
+      if (!numberOfTeamPerDepartment) {
+        results.code = STATUS_CODE.PRECONDITION_FAILED;
+        results.message = 'please input numberOfTeamPerDepartment';
+        return results;
+      }
+      if (!numberOfMember) {
+        results.code = STATUS_CODE.PRECONDITION_FAILED;
+        results.message = 'please input numberOfTeamPerDepartment';
+        return results;
+      }
+
+      const promises: any[] = [];
+
+      /** ceo */
       const ceo = (await ceoService.createOne(
         {
           name: faker.name.firstName(),
@@ -31,7 +55,7 @@ class CommonController {
       )) as CEO;
 
       /** department */
-      for (let i = 0; i < CREATE_NUM; i++) {
+      for (let i = 0; i < numberOfDepartment; i++) {
         const department = (await departmentService.createOne(
           {
             ceoId: ceo.id,
@@ -41,16 +65,20 @@ class CommonController {
         )) as Department;
 
         /** team */
-        for (let i = 0; i < CREATE_NUM; i++) {
-          teamService.createOne(
-            {
-              departmentId: department.id,
-              project: faker.commerce.productName(),
-            },
-            null,
+        for (let i = 0; i < numberOfTeamPerDepartment; i++) {
+          promises.push(
+            teamService.createOne(
+              {
+                departmentId: department.id,
+                project: faker.commerce.productName(),
+              },
+              null,
+            ),
           );
         }
       }
+
+      await Promise.all(promises);
 
       results.code = STATUS_CODE.OK;
       results.message = 'successfully';
@@ -64,8 +92,8 @@ class CommonController {
     }
   };
 
-  /* ============================================================================================================================ */
-  createMembers = async () => {
+  /** ================================================================================== */
+  createMembers = async (numberOfMember: number) => {
     const results = {
       code: 0,
       message: '',
@@ -73,10 +101,8 @@ class CommonController {
     } as HTTPdata;
 
     try {
-      let no = 1;
       const member = await memberService.createMany(
-        times(CREATE_NUM, () => ({
-          id: no++,
+        times(numberOfMember, () => ({
           name: faker.name.firstName(),
         })),
         null,
@@ -94,7 +120,7 @@ class CommonController {
     }
   };
 
-  /* ============================================================================================================================ */
+  /** ================================================================================== */
   createTeamMembers = async () => {
     const results = {
       code: 0,
@@ -111,17 +137,18 @@ class CommonController {
         attributes: ['id'],
       })) as Member[];
 
+      const dataList: any[] = [];
       for (const team of teams) {
         for (const member of members) {
-          teamMemberService.createOne(
-            {
-              teamId: team.id,
-              memberId: member.id,
-            },
-            null,
-          );
+          const data = {
+            teamId: team.id,
+            memberId: member.id,
+          };
+          dataList.push(data);
         }
       }
+
+      teamMemberService.createMany(dataList, null);
 
       results.code = STATUS_CODE.OK;
       results.message = 'successfully';

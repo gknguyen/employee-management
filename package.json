@@ -9,7 +9,8 @@
     "start:dev": "cross-env NODE_ENV=development && set DEBUG=employee-management:server && ts-node-dev --respawn --transpile-only ./src/app/server --watch ./src",
     "start:prod": "cross-env NODE_ENV=production tsc && node ./lib/app/server.js",
     "ci:prod": "npm install --frozen-lockfile --ignore-scripts --prod",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./src/tests/*.test.ts --watch --reporter-options reportDir=test-reports/mochawesome --reporter-options jsonReport=true",
+    "coverage": "nyc mocha ./src/**/*.test.ts --reporter-options reportDir=test-reports/coverage"
   },
   "repository": {
     "type": "git",
@@ -41,7 +42,9 @@
     "sequelize": "^6.3.5"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/body-parser": "^1.19.0",
+    "@types/chai": "^4.2.13",
     "@types/compression": "^1.7.0",
     "@types/cookie-parser": "^1.4.2",
     "@types/debug": "^4.1.5",
@@ -49,13 +52,20 @@
     "@types/faker": "^5.1.2",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash.times": "^4.3.6",
+    "@types/mocha": "^8.0.3",
     "@types/morgan": "^1.9.1",
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
     "chai": "^4.2.0",
+    "isparta": "^4.1.1",
+    "istanbul": "^0.4.5",
     "mocha": "^8.1.3",
     "mochawesome": "^6.1.1",
     "mochawesome-screenshots": "^1.7.3",
     "nyc": "^15.1.0",
     "prettier": "^2.1.2",
+    "source-map-support": "^0.5.19",
+    "ts-node": "^9.0.0",
     "ts-node-dev": "^1.0.0-pre.63",
     "tslint": "^6.1.3",
     "typescript": "^4.0.3"

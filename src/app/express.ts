@@ -29,9 +29,9 @@ functions
 */
 
 function loadRoutes() {
-  app.use('/common', commonRouter);
-  app.use('/general', verifyToken(false), genaralRouter);
   app.use('/auth', authRouter);
+  app.use('/general', verifyToken(false), genaralRouter);
+  app.use('/common', verifyToken(false), commonRouter);
 }
 
 function loadViews() {

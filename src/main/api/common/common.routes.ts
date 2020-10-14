@@ -1,12 +1,13 @@
 import express, { Router } from 'express';
 import STATUS_CODE from 'http-status';
 import errorHandler from '../../../configs/errorHandler/errorHandler';
+import { convertStringToNumber } from '../../../configs/utils';
 import commonController from './common.controllers';
 
 const commonRouter = Router();
 
 commonRouter.post(
-  '/create',
+  '/createDumpData',
   createCEO(false),
   createMembers(false),
   createTeamMembers(),
@@ -24,7 +25,15 @@ function createCEO(endHere = true) {
       res: express.Response,
       next: express.NextFunction,
     ) => {
-      const results = await commonController.createCEO();
+      const numberOfDepartment = req.body.numberOfDepartment as number;
+      const numberOfTeamPerDepartment = req.body.numberOfTeamPerDepartment as number;
+      const numberOfMember = req.body.numberOfMember as number;
+
+      const results = await commonController.createCEO(
+        numberOfDepartment,
+        numberOfTeamPerDepartment,
+        numberOfMember,
+      );
 
       if (endHere) {
         res.status(results.code).send(results);
@@ -48,7 +57,10 @@ function createMembers(endHere = true) {
       res: express.Response,
       next: express.NextFunction,
     ) => {
-      const results = await commonController.createMembers();
+      const numberOfMember = convertStringToNumber(
+        req.body.numberOfMember as string,
+      );
+      const results = await commonController.createMembers(numberOfMember);
 
       if (endHere) {
         res.status(results.code).send(results);

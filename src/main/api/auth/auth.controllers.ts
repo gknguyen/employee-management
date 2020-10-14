@@ -41,13 +41,13 @@ class AuthController {
     try {
       /** chec input */
       if (!username) {
-        results.code = STATUS_CODE.NOT_FOUND;
+        results.code = STATUS_CODE.PRECONDITION_FAILED;
         results.message = 'username is missing';
         return results;
       }
       if (!password) {
-        results.code = STATUS_CODE.NOT_FOUND;
-        results.message = 'loginPassword is missing';
+        results.code = STATUS_CODE.PRECONDITION_FAILED;
+        results.message = 'password is missing';
         return results;
       }
 
@@ -58,7 +58,7 @@ class AuthController {
       })) as User;
 
       if (!user) {
-        results.code = STATUS_CODE.NOT_FOUND;
+        results.code = STATUS_CODE.PRECONDITION_FAILED;
         results.message = 'user not found';
         return results;
       }
@@ -72,7 +72,7 @@ class AuthController {
         user['authToken'] = token;
         await user.save();
 
-        /** send responses to client-side */
+        /** return responses */
         results.code = STATUS_CODE.OK;
         results.message = 'login successfully';
         results.data = { token };
@@ -102,7 +102,7 @@ class AuthController {
       /** check token existed or not */
       if (!token) {
         results.code = STATUS_CODE.UNAUTHORIZED;
-        results.message = 'token not found';
+        results.message = 'token is missing';
         return results;
       }
 
