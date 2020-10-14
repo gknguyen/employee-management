@@ -36,4 +36,5 @@ with JWT in the headers to get data with limit 1500 members (no JWT => unauthori
 unit tests
 
 1./ run script "npm run test"
+
 2./ html report will be generated in folder test-reports
