@@ -3,16 +3,21 @@
 Techbase VN test (Back-end system)
 
 Design pattern: Typescript
+
 Framework: expressjs
+
 API: Restful API
 
 authentication session: JWT
+
 hash login password: cryptojs
 
 Database: MySQL
+
 ORM: Sequelize
 
 Unit test tool: mocha, chai
+
 Unit test report: mochawesome
 
 API test: Postman
