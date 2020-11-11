@@ -6,7 +6,8 @@ dotenv.config();
 const ENV = {
   /** main */
   NODE_ENV: process.env.NODE_ENV || 'development',
-  PORT: convertStringToNumber(process.env.PORT || '3000'),
+  HTTP_PORT: convertStringToNumber(process.env.HTTP_PORT || '3000'),
+  HTTPS_PORT: convertStringToNumber(process.env.HTTPS_PORT || '4000'),
 
   /** JWT */
   JWT_SECRET: process.env.JWT_SECRET || 'secret',

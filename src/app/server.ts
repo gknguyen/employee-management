@@ -1,21 +1,27 @@
 import debug from 'debug';
 import http from 'http';
+import https from 'https';
 import ENV from '../configs/env';
 import sequelize from '../configs/sequelize';
 import MYSQL from '../main/database/mysql/mysqlService';
 import { createDumpData } from './dumpData';
 import app from './express';
+import fs from 'fs';
+import path from 'path';
 
-const server = http.createServer(app);
 const logger = debug('employee-management:server');
+const ssl = {
+  key: fs.readFileSync(path.resolve('SSL/test-ssl.local.key')),
+  cert: fs.readFileSync(path.resolve('SSL/test-ssl.local.crt')),
+};
 
 /**
-connect to Database
-*/
+ * connect to Database
+ * */
 sequelize
   .authenticate()
-  .then(() => logger('Connected to database: ' + ENV.APP_DB_URL))
-  .catch((err: Error) => console.error('Unable to connect to the database:', err.toString()));
+  .then(() => logger(`Connected to database: ${ENV.APP_DB_URL}`))
+  .catch((err: Error) => console.error(`Unable to connect to the database: ${err.toString()}`));
 
 sequelize
   .sync({ alter: false, force: false })
@@ -28,41 +34,17 @@ sequelize
     console.log(`initialize table: ${MYSQL.userService.generateTable()}`);
     console.log(`initialize table: ${MYSQL.userRoleService.generateTable()}`);
   })
-  .then(async () => {
-    createDumpData();
-  });
+  .then(async () => createDumpData())
+  .catch((err: Error) => console.error(`Unable to sync with the database: ${err.toString()}`));
 
 /**
-start server
-*/
-app.set('port', ENV.PORT);
-server.listen(ENV.PORT);
-server.on('error', onError);
-server.on('listening', onListening);
+ * start server with HTTP
+ * */
+http.createServer(app).listen(ENV.HTTP_PORT, () => logger(`HTTP : Listening on ${ENV.HTTP_PORT}`));
 
-/** ================================================================================== */
 /**
-functions
-*/
-
-function onError(error: { syscall: string; code: any }) {
-  if (error.syscall !== 'listen') throw error;
-
-  const bind = typeof ENV.PORT === 'string' ? 'Pipe ' + ENV.PORT : 'Port ' + ENV.PORT;
-
-  /** handle specific listen errors with friendly messages */
-  switch (error.code) {
-    case 'EACCES':
-      throw new Error(bind + ' requires elevated privileges');
-    case 'EADDRINUSE':
-      throw new Error(bind + ' is already in use');
-    default:
-      throw error;
-  }
-}
-
-function onListening() {
-  const addr = server.address();
-  const bind = addr ? (typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port) : '';
-  logger('Listening on ' + bind);
-}
+ * start server with HTTPS
+ * */
+https
+  .createServer(ssl, app)
+  .listen(ENV.HTTPS_PORT, () => logger(`HTTPS : Listening on ${ENV.HTTPS_PORT}`));
