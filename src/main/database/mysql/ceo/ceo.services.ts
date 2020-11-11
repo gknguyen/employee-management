@@ -1,7 +1,7 @@
 import RestService, { Restful } from '../../../../configs/restful';
 import CEOModel from './ceo.model';
 
-class CEOService implements Restful {
+export default class CEOService implements Restful {
   private restService: RestService;
 
   constructor() {
@@ -9,30 +9,26 @@ class CEOService implements Restful {
   }
 
   /** table name */
-  generateTable() {
+  public generateTable() {
     return this.restService.generateTable();
   }
 
   /** get */
-  findOne(condition: any) {
+  public findOne(condition: any) {
     return this.restService.findOne(condition);
   }
-  findMany(condition: any) {
+  public findMany(condition: any) {
     return this.restService.findMany(condition);
   }
-  findManyAndCount(condition: any) {
+  public findManyAndCount(condition: any) {
     return this.restService.findManyAndCount(condition);
   }
 
   /** post */
-  createOne(data: any, condition: any) {
+  public createOne(data: any, condition: any) {
     return this.restService.createOne(data, condition);
   }
-  createMany(data: any[], condition: any) {
+  public createMany(data: any[], condition: any) {
     return this.restService.createMany(data, condition);
   }
 }
-
-const ceoService = new CEOService();
-
-export default ceoService;

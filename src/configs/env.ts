@@ -29,6 +29,3 @@ export const ERROR_LOG_FILE_MAX_SIZE = convertStringToNumber(
 /** Mysql DB */
 export const APP_DB_URL =
   process.env.APP_DB_URL || 'mysql://root:@127.0.0.1:3306/employee_management';
-
-/** test */
-export const CREATE_NUM = 15;

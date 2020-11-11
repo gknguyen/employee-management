@@ -1,17 +1,16 @@
-import bodyParser from 'body-parser';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import express, { json } from 'express';
+import fs from 'fs';
 import helmet from 'helmet';
+import { default as logger, default as morgan } from 'morgan';
+import os from 'os';
 import path, { join } from 'path';
+import { ACCESS_LOG_FILE_MAX_SIZE, NODE_ENV } from '../configs/env';
 import { getFilesizeInBytes } from '../configs/utils';
 import authRouter, { verifyToken } from '../main/api/auth/auth.routes';
 import commonRouter from '../main/api/common/common.routes';
 import genaralRouter from '../main/api/general/general.routes';
-import fs from 'fs';
-import { ACCESS_LOG_FILE_MAX_SIZE, NODE_ENV } from '../configs/env';
-import { default as logger, default as morgan } from 'morgan';
-import os from 'os';
 
 let num = 0;
 
@@ -89,8 +88,8 @@ function loadConfigs() {
 
   app.use(compression());
   app.use(json());
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
   app.use(helmet());
 }

@@ -1,22 +1,19 @@
 import STATUS_CODE from 'http-status';
 import { HTTPdata } from '../../../configs/interfaces';
 import { CEO } from '../../database/mysql/ceo/ceo.model';
-import ceoService from '../../database/mysql/ceo/ceo.services';
 import DepartmentModel, {
   Department,
 } from '../../database/mysql/department/department.model';
-import departmentService from '../../database/mysql/department/department.services';
 import MemberModel from '../../database/mysql/member/member.model';
 import TeamMemberModel, {
   TeamMember,
 } from '../../database/mysql/team.member/team.member.model';
-import teamMemberService from '../../database/mysql/team.member/team.member.services';
 import TeamModel, { Team } from '../../database/mysql/team/team.model';
-import teamService from '../../database/mysql/team/team.services';
+import MYSQL from '../../database/mysqlService';
 
 class GeneralController {
   /** ================================================================================== */
-  getMembersInTreeModel = async () => {
+  public getMembersInTreeModel = async () => {
     const results = {
       code: 0,
       message: '',
@@ -25,7 +22,7 @@ class GeneralController {
 
     try {
       /** get data */
-      const data = await ceoService.findManyAndCount({
+      const data = await MYSQL.ceoService.findManyAndCount({
         attributes: ['name'],
         include: [
           {
@@ -84,7 +81,7 @@ class GeneralController {
   };
 
   /** ================================================================================== */
-  getLimit1500Members = async () => {
+  public getLimit1500Members = async () => {
     const results = {
       code: 0,
       message: '',
@@ -95,12 +92,12 @@ class GeneralController {
       let memberNumber = 0;
 
       /** get ceo */
-      const ceo = (await ceoService.findOne({
+      const ceo = (await MYSQL.ceoService.findOne({
         attributes: ['id', 'name'],
       })) as CEO;
 
       /** get the list of department manager */
-      const departmentList = (await departmentService.findMany({
+      const departmentList = (await MYSQL.departmentService.findMany({
         attributes: ['id', 'manager'],
         where: { ceoId: ceo.id },
       })) as Department[];
@@ -108,7 +105,7 @@ class GeneralController {
       /** get the list of team for each department manager */
       let teamList: Team[] = [];
       for (const department of departmentList) {
-        const teams = (await teamService.findMany({
+        const teams = (await MYSQL.teamService.findMany({
           attributes: ['id', 'project'],
           where: { departmentId: department.id },
         })) as Team[];
@@ -118,7 +115,7 @@ class GeneralController {
       /** get the list of team member for each team */
       let teamMemberList: TeamMember[] = [];
       for (const team of teamList) {
-        const teamMembers = (await teamMemberService.findMany({
+        const teamMembers = (await MYSQL.teamMemberService.findMany({
           attributes: ['id'],
           where: { teamId: team.id },
           include: [

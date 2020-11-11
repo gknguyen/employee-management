@@ -1,7 +1,7 @@
 import RestService, { Restful } from '../../../../configs/restful';
 import UserModel, { User } from './user.model';
 
-class UserService implements Restful {
+export default class UserService implements Restful {
   private restService: RestService;
 
   constructor() {
@@ -9,28 +9,28 @@ class UserService implements Restful {
   }
 
   /** table name */
-  generateTable() {
+  public generateTable() {
     return this.restService.generateTable();
   }
 
   /** get */
-  findOne(condition: any) {
+  public findOne(condition: any) {
     return this.restService.findOne(condition);
   }
-  findMany(condition: any) {
+  public findMany(condition: any) {
     return this.restService.findMany(condition);
   }
 
   /** post */
-  createOne(data: any, condition: any) {
+  public createOne(data: any, condition: any) {
     return this.restService.createOne(data, condition);
   }
-  createMany(data: any[], condition: any) {
+  public createMany(data: any[], condition: any) {
     return this.restService.createMany(data, condition);
   }
 
   /** init */
-  async init(username: string, password: string) {
+  public async init(username: string, password: string) {
     let user = (await this.restService.findOne({
       where: { username: username },
     })) as User;
@@ -48,7 +48,3 @@ class UserService implements Restful {
     return user;
   }
 }
-
-const userService = new UserService();
-
-export default userService;
