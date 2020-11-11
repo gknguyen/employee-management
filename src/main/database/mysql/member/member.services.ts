@@ -1,32 +1,38 @@
-import RestService, { Restful } from '../../../../configs/restful';
+import { Restful } from '../../../../configs/restful';
+import { AnyModel } from '../../../../configs/sequelize';
 import MemberModel from './member.model';
 
 class MemberService implements Restful {
-  private restService: RestService;
+  model: AnyModel;
 
   constructor() {
-    this.restService = new RestService(MemberModel);
+    this.model = MemberModel;
   }
 
   /** table name */
-  generateTable() {
-    return this.restService.generateTable();
+  public generateTable() {
+    return this.model.getTableName();
   }
 
   /** get */
-  findOne(condition: any) {
-    return this.restService.findOne(condition);
+  public findOne(condition: object) {
+    return this.model.findOne({ ...condition });
   }
-  findMany(condition: any) {
-    return this.restService.findMany(condition);
+  public findMany(condition: object) {
+    return this.model.findAll({ ...condition });
   }
 
   /** post */
-  createOne(data: any, condition: any) {
-    return this.restService.createOne(data, condition);
+  public createOne(data: object, condition: object) {
+    return this.model.create({ ...data }, { ...condition });
   }
-  createMany(data: any[], condition: any) {
-    return this.restService.createMany(data, condition);
+  public createMany(data: object[], condition: object) {
+    return this.model.bulkCreate([...data], { ...condition });
+  }
+
+  /** get or post */
+  public async findOrCreate(condition: object) {
+    return this.model.findOrCreate({ ...condition });
   }
 }
 

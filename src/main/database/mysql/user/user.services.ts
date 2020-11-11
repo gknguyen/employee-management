@@ -1,51 +1,38 @@
-import RestService, { Restful } from '../../../../configs/restful';
-import UserModel, { User } from './user.model';
+import { Restful } from '../../../../configs/restful';
+import { AnyModel } from '../../../../configs/sequelize';
+import UserModel from './user.model';
 
 class UserService implements Restful {
-  private restService: RestService;
+  model: AnyModel;
 
   constructor() {
-    this.restService = new RestService(UserModel);
+    this.model = UserModel;
   }
 
   /** table name */
-  generateTable() {
-    return this.restService.generateTable();
+  public generateTable() {
+    return this.model.getTableName();
   }
 
   /** get */
-  findOne(condition: any) {
-    return this.restService.findOne(condition);
+  public findOne(condition: object) {
+    return this.model.findOne({ ...condition });
   }
-  findMany(condition: any) {
-    return this.restService.findMany(condition);
+  public findMany(condition: object) {
+    return this.model.findAll({ ...condition });
   }
 
   /** post */
-  createOne(data: any, condition: any) {
-    return this.restService.createOne(data, condition);
+  public createOne(data: object, condition: object) {
+    return this.model.create({ ...data }, { ...condition });
   }
-  createMany(data: any[], condition: any) {
-    return this.restService.createMany(data, condition);
+  public createMany(data: object[], condition: object) {
+    return this.model.bulkCreate([...data], { ...condition });
   }
 
-  /** init */
-  async init(username: string, password: string) {
-    let user = (await this.restService.findOne({
-      where: { username: username },
-    })) as User;
-
-    if (!user) {
-      user = (await this.restService.createOne(
-        {
-          username: username,
-          password: password,
-        },
-        null,
-      )) as User;
-    }
-
-    return user;
+  /** get or post */
+  public async findOrCreate(condition: object) {
+    return this.model.findOrCreate({ ...condition });
   }
 }
 
