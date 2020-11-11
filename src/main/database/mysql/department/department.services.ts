@@ -1,9 +1,8 @@
 import { Restful } from '../../../../configs/interfaces';
-import { AnyModel } from '../../../../configs/sequelize';
-import DepartmentModel from './department.model';
+import DepartmentModel, { DepartmentModelStatic } from './department.model';
 
 export default class DepartmentService implements Restful {
-  model: AnyModel;
+  model: DepartmentModelStatic;
 
   constructor() {
     this.model = DepartmentModel;

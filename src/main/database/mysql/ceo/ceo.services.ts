@@ -1,9 +1,8 @@
 import { Restful } from '../../../../configs/interfaces';
-import { AnyModel } from '../../../../configs/sequelize';
-import CEOModel from './ceo.model';
+import CEOModel, { CEOModelStatic } from './ceo.model';
 
 export default class CEOService implements Restful {
-  model: AnyModel;
+  model: CEOModelStatic;
 
   constructor() {
     this.model = CEOModel;

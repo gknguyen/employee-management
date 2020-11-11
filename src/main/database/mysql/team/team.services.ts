@@ -1,9 +1,8 @@
 import { Restful } from '../../../../configs/interfaces';
-import { AnyModel } from '../../../../configs/sequelize';
-import TeamModel from './team.model';
+import TeamModel, { TeamModelStatic } from './team.model';
 
 export default class TeamService implements Restful {
-  model: AnyModel;
+  model: TeamModelStatic;
 
   constructor() {
     this.model = TeamModel;

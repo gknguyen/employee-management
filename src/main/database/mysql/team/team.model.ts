@@ -8,7 +8,7 @@ export interface Team extends Model {
   project: string;
 }
 
-type ModelStatic = typeof Model & {
+export type TeamModelStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): Team;
 };
 
@@ -37,7 +37,7 @@ const TeamModel = sequelize.define(
   {
     timestamps: false,
   },
-) as ModelStatic;
+) as TeamModelStatic;
 
 /*
 association with Department table

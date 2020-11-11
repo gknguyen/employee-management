@@ -1,9 +1,8 @@
 import { Restful } from '../../../../configs/interfaces';
-import { AnyModel } from '../../../../configs/sequelize';
-import MemberModel from './member.model';
+import MemberModel, { MemberModelStatic } from './member.model';
 
 export default class MemberService implements Restful {
-  model: AnyModel;
+  model: MemberModelStatic;
 
   constructor() {
     this.model = MemberModel;

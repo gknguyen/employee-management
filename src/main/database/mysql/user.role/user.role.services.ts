@@ -1,9 +1,8 @@
 import { Restful } from '../../../../configs/interfaces';
-import { AnyModel } from '../../../../configs/sequelize';
-import UserRoleModel from './user.role.model';
+import UserRoleModel, { UserRoleModelStatic } from './user.role.model';
 
 export default class UserRoleService implements Restful {
-  model: AnyModel;
+  model: UserRoleModelStatic;
 
   constructor() {
     this.model = UserRoleModel;

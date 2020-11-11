@@ -1,14 +1,15 @@
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
-import express, { json } from 'express';
+import express from 'express';
 import fs from 'fs';
 import helmet from 'helmet';
-import { default as logger, default as morgan } from 'morgan';
+import morgan from 'morgan';
 import os from 'os';
 import path, { join } from 'path';
+import { UserRole } from '../configs/enum-list';
 import ENV from '../configs/env';
 import { getFilesizeInBytes } from '../configs/utils';
-import authRouter, { verifyToken } from '../main/api/auth/auth.routes';
+import authRouter, { authorizedUserRole, verifyToken } from '../main/api/auth/auth.routes';
 import commonRouter from '../main/api/common/common.routes';
 import genaralRouter from '../main/api/general/general.routes';
 
@@ -29,8 +30,8 @@ functions
 
 function loadRoutes() {
   app.use('/auth', authRouter);
-  app.use('/general', verifyToken(false), genaralRouter);
-  app.use('/common', verifyToken(false), commonRouter);
+  app.use('/general', verifyToken(), genaralRouter);
+  app.use('/common', verifyToken(), authorizedUserRole(UserRole.admin), commonRouter);
 }
 
 function loadViews() {
@@ -52,9 +53,10 @@ function loadConfigs() {
     flags: 'a',
   });
 
+  /** HTTP request logger */
   app.use(
-    logger(
-      '==========================================================================================' +
+    morgan(
+      `=================== ${ENV.NODE_ENV === 'production' ? 'common' : 'dev'} ==================` +
         os.EOL +
         'remote-addr: :remote-addr' +
         os.EOL +
@@ -79,16 +81,18 @@ function loadConfigs() {
     ),
   );
 
-  app.use(
-    morgan(ENV.NODE_ENV === 'production' ? 'common' : 'dev', {
-      stream: accessLogStream,
-    }),
-  );
-
-  app.use(compression());
-  app.use(json());
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-  app.use(cookieParser());
+  /** secure app by setting various HTTP headers */
   app.use(helmet());
+
+  /** compress HTTP responses */
+  app.use(compression());
+
+  /** for parsing HTTP request type : application/json */
+  app.use(express.json());
+
+  /** for parsing HTTP request type :  application/x-www-form-urlencoded */
+  app.use(express.urlencoded({ extended: true }));
+
+  /** for parsing cookies */
+  app.use(cookieParser());
 }

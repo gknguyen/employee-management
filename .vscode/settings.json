@@ -7,15 +7,6 @@
   },
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
-  "cSpell.ignorePaths": [
-    "**/package-lock.json",
-    "**/node_modules/***",
-    "**/vscode-extension/***",
-    "**/.git/objects/***",
-    ".vscode",
-    "**.json"
-  ],
   "files.autoSave": "onFocusChange",
-  "cSpell.words": ["oracledb"],
   "typescript.tsdk": "d:\\GK Technology\\All Projects\\GIT repositories\\restaurant-management-system\\node_modules\\typescript\\lib"
 }

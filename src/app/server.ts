@@ -8,7 +8,6 @@ import app from './express';
 
 const server = http.createServer(app);
 const logger = debug('employee-management:server');
-const Crypto = require('cryptojs').Crypto;
 
 /**
 connect to Database

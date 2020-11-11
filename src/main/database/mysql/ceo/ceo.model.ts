@@ -6,7 +6,7 @@ export interface CEO extends Model {
   name: string;
 }
 
-type ModelStatic = typeof Model & {
+export type CEOModelStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): CEO;
 };
 
@@ -26,6 +26,6 @@ const CEOModel = sequelize.define(
   {
     timestamps: false,
   },
-) as ModelStatic;
+) as CEOModelStatic;
 
 export default CEOModel;

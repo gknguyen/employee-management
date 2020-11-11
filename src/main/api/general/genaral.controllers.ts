@@ -88,30 +88,36 @@ class GeneralController {
       let memberNumber = 0;
 
       /** get ceo */
-      const ceo = (await MYSQL.ceoService.findOne({
+      const ceo = await MYSQL.ceoService.findOne({
         attributes: ['id', 'name'],
-      })) as CEO;
+      });
+
+      if (!ceo) {
+        results.code = STATUS_CODE.PRECONDITION_FAILED;
+        results.message = 'ceo not found';
+        return results;
+      }
 
       /** get the list of department manager */
-      const departmentList = (await MYSQL.departmentService.findMany({
+      const departmentList = await MYSQL.departmentService.findMany({
         attributes: ['id', 'manager'],
         where: { ceoId: ceo.id },
-      })) as Department[];
+      });
 
       /** get the list of team for each department manager */
       let teamList: Team[] = [];
       for (const department of departmentList) {
-        const teams = (await MYSQL.teamService.findMany({
+        const teams = await MYSQL.teamService.findMany({
           attributes: ['id', 'project'],
           where: { departmentId: department.id },
-        })) as Team[];
+        });
         teamList = teamList.concat(teams);
       }
 
       /** get the list of team member for each team */
       let teamMemberList: TeamMember[] = [];
       for (const team of teamList) {
-        const teamMembers = (await MYSQL.teamMemberService.findMany({
+        const teamMembers = await MYSQL.teamMemberService.findMany({
           attributes: ['id'],
           where: { teamId: team.id },
           include: [
@@ -121,7 +127,7 @@ class GeneralController {
               attributes: ['id', 'name'],
             },
           ],
-        })) as TeamMember[];
+        });
         teamMemberList = teamMemberList.concat(teamMembers);
       }
 

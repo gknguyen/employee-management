@@ -8,7 +8,7 @@ export interface Department extends Model {
   manager: string;
 }
 
-type ModelStatic = typeof Model & {
+export type DepartmentModelStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): Department;
 };
 
@@ -37,7 +37,7 @@ const DepartmentModel = sequelize.define(
   {
     timestamps: false,
   },
-) as ModelStatic;
+) as DepartmentModelStatic;
 
 /*
 association with CEO table

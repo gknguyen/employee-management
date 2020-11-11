@@ -9,8 +9,8 @@
     "start:dev": "cross-env NODE_ENV=development && set DEBUG=employee-management:server && ts-node-dev --respawn --transpile-only ./src/app/server --watch ./src",
     "start:prod": "cross-env NODE_ENV=production tsc && node ./lib/app/server.js",
     "ci:prod": "npm install --frozen-lockfile --ignore-scripts --prod",
-    "test": "mocha ./src/tests/*.test.ts --watch --reporter-options reportDir=test-reports/mochawesome --reporter-options jsonReport=true",
-    "coverage": "nyc mocha ./src/**/*.test.ts --reporter-options reportDir=test-reports/coverage",
+    "test": "cross-env NODE_ENV=test mocha ./src/tests/*.test.ts --watch --reporter-options reportDir=test-reports/mochawesome --reporter-options jsonReport=true",
+    "coverage": "cross-env NODE_ENV=test nyc mocha ./src/**/*.test.ts --reporter-options reportDir=test-reports/coverage",
     "prettier": "prettier --write ./src/**/*.ts"
   },
   "repository": {

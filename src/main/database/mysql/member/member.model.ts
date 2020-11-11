@@ -6,7 +6,7 @@ export interface Member extends Model {
   name: string;
 }
 
-type ModelStatic = typeof Model & {
+export type MemberModelStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): Member;
 };
 
@@ -26,6 +26,6 @@ const MemberModel = sequelize.define(
   {
     timestamps: false,
   },
-) as ModelStatic;
+) as MemberModelStatic;
 
 export default MemberModel;

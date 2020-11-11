@@ -1,17 +1,19 @@
 import { BuildOptions, DataTypes, Model } from 'sequelize';
 import sequelize from '../../../../configs/sequelize';
+import { User } from '../user/user.model';
 
 export interface UserRole extends Model {
   readonly id: number;
   role: string;
+  userList: User[];
 }
 
-type ModelStatic = typeof Model & {
+export type UserRoleModelStatic = typeof Model & {
   new (values?: object, options?: BuildOptions): UserRole;
 };
 
 const UserRoleModel = sequelize.define(
-  'userRole',
+  'user_role',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -27,6 +29,6 @@ const UserRoleModel = sequelize.define(
   {
     timestamps: false,
   },
-) as ModelStatic;
+) as UserRoleModelStatic;
 
 export default UserRoleModel;

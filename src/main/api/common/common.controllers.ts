@@ -42,12 +42,9 @@ class CommonController {
       const promises: any[] = [];
 
       /** ceo */
-      const ceo = (await MYSQL.ceoService.createOne(
-        {
-          name: faker.name.firstName(),
-        },
-        null,
-      )) as CEO;
+      const ceo = await MYSQL.ceoService.createOne({
+        name: faker.name.firstName(),
+      });
 
       /** department */
       for (let i = 0; i < numberOfDepartment; i++) {
@@ -100,7 +97,6 @@ class CommonController {
         times(numberOfMember, () => ({
           name: faker.name.firstName(),
         })),
-        null,
       );
 
       results.code = STATUS_CODE.OK;
@@ -124,13 +120,13 @@ class CommonController {
     } as HTTPdata;
 
     try {
-      const teams = (await MYSQL.teamService.findMany({
+      const teams = await MYSQL.teamService.findMany({
         attributes: ['id'],
-      })) as Team[];
+      });
 
-      const members = (await MYSQL.memberService.findMany({
+      const members = await MYSQL.memberService.findMany({
         attributes: ['id'],
-      })) as Member[];
+      });
 
       const dataList: any[] = [];
       for (const team of teams) {
@@ -143,7 +139,7 @@ class CommonController {
         }
       }
 
-      MYSQL.teamMemberService.createMany(dataList, null);
+      MYSQL.teamMemberService.createMany(dataList);
 
       results.code = STATUS_CODE.OK;
       results.message = 'successfully';
