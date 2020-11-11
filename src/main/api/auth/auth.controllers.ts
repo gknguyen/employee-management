@@ -4,7 +4,7 @@ import ENV from '../../../configs/env';
 import { HTTPdata, UserInfo } from '../../../configs/interfaces';
 import UserRoleModel from '../../database/mysql/user.role/user.role.model';
 import { User } from '../../database/mysql/user/user.model';
-import MYSQL from '../../database/mysqlService';
+import MYSQL from '../../database/mysql/mysqlService';
 
 const Crypto = require('cryptojs').Crypto;
 

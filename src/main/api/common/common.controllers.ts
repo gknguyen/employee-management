@@ -6,7 +6,7 @@ import { CEO } from '../../database/mysql/ceo/ceo.model';
 import { Department } from '../../database/mysql/department/department.model';
 import { Member } from '../../database/mysql/member/member.model';
 import { Team } from '../../database/mysql/team/team.model';
-import MYSQL from '../../database/mysqlService';
+import MYSQL from '../../database/mysql/mysqlService';
 
 class CommonController {
   /** ================================================================================== */

@@ -1,5 +1,5 @@
 import ENV from '../configs/env';
-import MYSQL from '../main/database/mysqlService';
+import MYSQL from '../main/database/mysql/mysqlService';
 
 const Crypto = require('cryptojs').Crypto;
 

@@ -5,7 +5,7 @@ import DepartmentModel, { Department } from '../../database/mysql/department/dep
 import MemberModel from '../../database/mysql/member/member.model';
 import TeamMemberModel, { TeamMember } from '../../database/mysql/team.member/team.member.model';
 import TeamModel, { Team } from '../../database/mysql/team/team.model';
-import MYSQL from '../../database/mysqlService';
+import MYSQL from '../../database/mysql/mysqlService';
 
 class GeneralController {
   /** ================================================================================== */

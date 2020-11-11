@@ -2,7 +2,7 @@ import debug from 'debug';
 import http from 'http';
 import ENV from '../configs/env';
 import sequelize from '../configs/sequelize';
-import MYSQL from '../main/database/mysqlService';
+import MYSQL from '../main/database/mysql/mysqlService';
 import { createDumpData } from './dumpData';
 import app from './express';
 
