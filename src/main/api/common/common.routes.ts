@@ -6,12 +6,7 @@ import commonController from './common.controllers';
 
 const commonRouter = Router();
 
-commonRouter.post(
-  '/createDumpData',
-  createCEO(false),
-  createMembers(false),
-  createTeamMembers(),
-);
+commonRouter.post('/createDumpData', createCEO(false), createMembers(false), createTeamMembers());
 
 /** ================================================================================== */
 /**
@@ -20,11 +15,7 @@ functions
 
 function createCEO(endHere = true) {
   return errorHandler(
-    async (
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction,
-    ) => {
+    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
       const numberOfDepartment = req.body.numberOfDepartment as number;
       const numberOfTeamPerDepartment = req.body.numberOfTeamPerDepartment as number;
       const numberOfMember = req.body.numberOfMember as number;
@@ -52,14 +43,8 @@ function createCEO(endHere = true) {
 
 function createMembers(endHere = true) {
   return errorHandler(
-    async (
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction,
-    ) => {
-      const numberOfMember = convertStringToNumber(
-        req.body.numberOfMember as string,
-      );
+    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+      const numberOfMember = convertStringToNumber(req.body.numberOfMember as string);
       const results = await commonController.createMembers(numberOfMember);
 
       if (endHere) {
@@ -79,11 +64,7 @@ function createMembers(endHere = true) {
 
 function createTeamMembers(endHere = true) {
   return errorHandler(
-    async (
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction,
-    ) => {
+    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
       const results = await commonController.createTeamMembers();
 
       if (endHere) {

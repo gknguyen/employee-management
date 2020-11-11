@@ -1,5 +1,6 @@
 import { BuildOptions, DataTypes, Model } from 'sequelize';
 import sequelize from '../../../../configs/sequelize';
+import UserRoleModel from '../user.role/user.role.model';
 
 export interface User extends Model {
   readonly id: number;
@@ -20,6 +21,15 @@ const UserModel = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    userRoleId: {
+      type: DataTypes.INTEGER,
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
+      references: {
+        model: UserRoleModel,
+        key: 'id',
+      },
+    },
     username: {
       type: DataTypes.STRING,
     },
@@ -34,5 +44,17 @@ const UserModel = sequelize.define(
     timestamps: false,
   },
 ) as ModelStatic;
+
+/** association with user role table */
+UserRoleModel.hasMany(UserModel, {
+  sourceKey: 'id',
+  foreignKey: 'userRoleId',
+  as: 'userList',
+});
+UserModel.belongsTo(UserRoleModel, {
+  targetKey: 'id',
+  foreignKey: 'userRoleId',
+  as: 'userRole',
+});
 
 export default UserModel;

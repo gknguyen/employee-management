@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import authController from '../main/api/auth/auth.controllers';
+import authController from './auth.controllers';
 
 describe('authentication APIs', () => {
   describe('verify token', () => {

@@ -22,6 +22,8 @@ const DepartmentModel = sequelize.define(
     },
     ceoId: {
       type: DataTypes.INTEGER,
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
       references: {
         model: CEOModel,
         key: 'id',
@@ -50,7 +52,6 @@ DepartmentModel.belongsTo(CEOModel, {
   targetKey: 'id',
   foreignKey: 'ceoId',
   as: 'ceo',
-  onDelete: 'CASCADE',
 });
 
 export default DepartmentModel;

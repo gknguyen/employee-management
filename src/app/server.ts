@@ -1,13 +1,9 @@
 import debug from 'debug';
 import http from 'http';
-import { APP_DB_URL, CRYPTO_SECRET, PORT } from '../configs/env';
+import ENV from '../configs/env';
 import sequelize from '../configs/sequelize';
-import ceoService from '../main/database/mysql/ceo/ceo.services';
-import departmentService from '../main/database/mysql/department/department.services';
-import memberService from '../main/database/mysql/member/member.services';
-import teamMemberService from '../main/database/mysql/team.member/team.member.services';
-import teamService from '../main/database/mysql/team/team.services';
-import userService from '../main/database/mysql/user/user.services';
+import MYSQL from '../main/database/mysqlService';
+import { createDumpData } from './dumpData';
 import app from './express';
 
 const server = http.createServer(app);
@@ -19,30 +15,29 @@ connect to Database
 */
 sequelize
   .authenticate()
-  .then(() => logger('Connected to database: ' + APP_DB_URL))
-  .catch((err: Error) =>
-    console.error('Unable to connect to the database:', err.toString()),
-  );
+  .then(() => logger('Connected to database: ' + ENV.APP_DB_URL))
+  .catch((err: Error) => console.error('Unable to connect to the database:', err.toString()));
 
 sequelize
   .sync({ alter: false, force: false })
   .then(() => {
-    console.log(`initialize table: ${ceoService.generateTable()}`);
-    console.log(`initialize table: ${departmentService.generateTable()}`);
-    console.log(`initialize table: ${teamService.generateTable()}`);
-    console.log(`initialize table: ${memberService.generateTable()}`);
-    console.log(`initialize table: ${teamMemberService.generateTable()}`);
-    console.log(`initialize table: ${userService.generateTable()}`);
+    console.log(`initialize table: ${MYSQL.ceoService.generateTable()}`);
+    console.log(`initialize table: ${MYSQL.departmentService.generateTable()}`);
+    console.log(`initialize table: ${MYSQL.teamService.generateTable()}`);
+    console.log(`initialize table: ${MYSQL.memberService.generateTable()}`);
+    console.log(`initialize table: ${MYSQL.teamMemberService.generateTable()}`);
+    console.log(`initialize table: ${MYSQL.userService.generateTable()}`);
+    console.log(`initialize table: ${MYSQL.userRoleService.generateTable()}`);
   })
   .then(async () => {
-    userService.init('admin', Crypto.AES.encrypt('admin', CRYPTO_SECRET));
+    createDumpData();
   });
 
 /**
 start server
 */
-app.set('port', PORT);
-server.listen(PORT);
+app.set('port', ENV.PORT);
+server.listen(ENV.PORT);
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -54,7 +49,7 @@ functions
 function onError(error: { syscall: string; code: any }) {
   if (error.syscall !== 'listen') throw error;
 
-  const bind = typeof PORT === 'string' ? 'Pipe ' + PORT : 'Port ' + PORT;
+  const bind = typeof ENV.PORT === 'string' ? 'Pipe ' + ENV.PORT : 'Port ' + ENV.PORT;
 
   /** handle specific listen errors with friendly messages */
   switch (error.code) {
@@ -69,10 +64,6 @@ function onError(error: { syscall: string; code: any }) {
 
 function onListening() {
   const addr = server.address();
-  const bind = addr
-    ? typeof addr === 'string'
-      ? 'pipe ' + addr
-      : 'port ' + addr.port
-    : '';
+  const bind = addr ? (typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port) : '';
   logger('Listening on ' + bind);
 }

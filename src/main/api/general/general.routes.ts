@@ -15,11 +15,7 @@ functions
 
 function getMembersInTreeModel(endHere = true) {
   return errorHandler(
-    async (
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction,
-    ) => {
+    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
       const results = await generalController.getMembersInTreeModel();
 
       if (endHere) {
@@ -39,11 +35,7 @@ function getMembersInTreeModel(endHere = true) {
 
 function getLimit1500Members(endHere = true) {
   return errorHandler(
-    async (
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction,
-    ) => {
+    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
       const results = await generalController.getLimit1500Members();
 
       if (endHere) {

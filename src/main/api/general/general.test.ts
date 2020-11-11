@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import generalController from '../main/api/general/genaral.controllers';
+import generalController from './genaral.controllers';
 
 describe('general APIs', () => {
   describe('get members in tree model', () => {

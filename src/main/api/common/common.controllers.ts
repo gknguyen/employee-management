@@ -1,24 +1,19 @@
 import faker from 'faker';
 import STATUS_CODE from 'http-status';
 import times from 'lodash.times';
-import { CREATE_NUM } from '../../../configs/env';
 import { HTTPdata } from '../../../configs/interfaces';
 import { CEO } from '../../database/mysql/ceo/ceo.model';
-import ceoService from '../../database/mysql/ceo/ceo.services';
 import { Department } from '../../database/mysql/department/department.model';
-import departmentService from '../../database/mysql/department/department.services';
 import { Member } from '../../database/mysql/member/member.model';
-import memberService from '../../database/mysql/member/member.services';
-import teamMemberService from '../../database/mysql/team.member/team.member.services';
 import { Team } from '../../database/mysql/team/team.model';
-import teamService from '../../database/mysql/team/team.services';
+import MYSQL from '../../database/mysqlService';
 
 class CommonController {
   /** ================================================================================== */
-  createCEO = async (
-    numberOfDepartment: number | null | undefined,
-    numberOfTeamPerDepartment: number | null | undefined,
-    numberOfMember: number | null | undefined,
+  public createCEO = async (
+    numberOfDepartment?: number | null,
+    numberOfTeamPerDepartment?: number | null,
+    numberOfMember?: number | null,
   ) => {
     const results = {
       code: 0,
@@ -47,7 +42,7 @@ class CommonController {
       const promises: any[] = [];
 
       /** ceo */
-      const ceo = (await ceoService.createOne(
+      const ceo = (await MYSQL.ceoService.createOne(
         {
           name: faker.name.firstName(),
         },
@@ -56,7 +51,7 @@ class CommonController {
 
       /** department */
       for (let i = 0; i < numberOfDepartment; i++) {
-        const department = (await departmentService.createOne(
+        const department = (await MYSQL.departmentService.createOne(
           {
             ceoId: ceo.id,
             manager: faker.name.firstName(),
@@ -67,7 +62,7 @@ class CommonController {
         /** team */
         for (let i = 0; i < numberOfTeamPerDepartment; i++) {
           promises.push(
-            teamService.createOne(
+            MYSQL.teamService.createOne(
               {
                 departmentId: department.id,
                 project: faker.commerce.productName(),
@@ -93,7 +88,7 @@ class CommonController {
   };
 
   /** ================================================================================== */
-  createMembers = async (numberOfMember: number) => {
+  public createMembers = async (numberOfMember: number) => {
     const results = {
       code: 0,
       message: '',
@@ -101,7 +96,7 @@ class CommonController {
     } as HTTPdata;
 
     try {
-      const member = await memberService.createMany(
+      const member = await MYSQL.memberService.createMany(
         times(numberOfMember, () => ({
           name: faker.name.firstName(),
         })),
@@ -121,7 +116,7 @@ class CommonController {
   };
 
   /** ================================================================================== */
-  createTeamMembers = async () => {
+  public createTeamMembers = async () => {
     const results = {
       code: 0,
       message: '',
@@ -129,11 +124,11 @@ class CommonController {
     } as HTTPdata;
 
     try {
-      const teams = (await teamService.findMany({
+      const teams = (await MYSQL.teamService.findMany({
         attributes: ['id'],
       })) as Team[];
 
-      const members = (await memberService.findMany({
+      const members = (await MYSQL.memberService.findMany({
         attributes: ['id'],
       })) as Member[];
 
@@ -148,7 +143,7 @@ class CommonController {
         }
       }
 
-      teamMemberService.createMany(dataList, null);
+      MYSQL.teamMemberService.createMany(dataList, null);
 
       results.code = STATUS_CODE.OK;
       results.message = 'successfully';

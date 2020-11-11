@@ -1,37 +1,34 @@
-import { HTTPdata, UserInfo } from '../../../configs/interfaces';
 import STATUS_CODE from 'http-status';
-import userService from '../../database/mysql/user/user.services';
-import { User } from '../../database/mysql/user/user.model';
-import { CRYPTO_SECRET, JWT_EXPIRES_IN, JWT_SECRET } from '../../../configs/env';
 import jsonwebtoken from 'jsonwebtoken';
+import ENV from '../../../configs/env';
+import { HTTPdata, UserInfo } from '../../../configs/interfaces';
+import { User } from '../../database/mysql/user/user.model';
+import MYSQL from '../../database/mysqlService';
 
 const Crypto = require('cryptojs').Crypto;
 
 class AuthController {
   /** ================================================================================== */
-  getToken(user: User) {
+  private getToken(user: User) {
     const payload = {
       id: user.id,
       username: user.username,
     } as UserInfo;
-    const secret = JWT_SECRET;
-    const options = { expiresIn: JWT_EXPIRES_IN } as jsonwebtoken.SignOptions;
+    const secret = ENV.JWT_SECRET;
+    const options = { expiresIn: ENV.JWT_EXPIRES_IN } as jsonwebtoken.SignOptions;
     const token = jsonwebtoken.sign(payload, secret, options);
     return token;
   }
 
   /** ================================================================================== */
-  comparePassword(loginPass: string, userEncodedPass: string) {
-    const dencodedPass = Crypto.AES.decrypt(userEncodedPass, CRYPTO_SECRET);
+  private comparePassword(loginPass: string, userEncodedPass: string) {
+    const dencodedPass = Crypto.AES.decrypt(userEncodedPass, ENV.CRYPTO_SECRET);
     if (dencodedPass === loginPass) return true;
     else return false;
   }
 
   /* ================================================================================== */
-  login = async (
-    username: string | null | undefined,
-    password: string | null | undefined,
-  ) => {
+  public login = async (username?: string | null, password?: string | null) => {
     const results = {
       code: 0,
       message: '',
@@ -52,7 +49,7 @@ class AuthController {
       }
 
       /** get user infomation */
-      const user = (await userService.findOne({
+      const user = (await MYSQL.userService.findOne({
         attributes: ['id', 'username', 'password', 'authToken'],
         where: { username: username },
       })) as User;
@@ -91,7 +88,7 @@ class AuthController {
   };
 
   /** ================================================================================== */
-  getVerify = async (token: string | null | undefined) => {
+  public getVerify = async (token?: string | null) => {
     const results = {
       code: 0,
       message: '',
@@ -125,7 +122,7 @@ class AuthController {
       }
 
       /* get user data */
-      const userData = (await userService.findOne({
+      const userData = (await MYSQL.userService.findOne({
         attributes: ['username', 'authToken'],
         where: { username: userInfo.username },
       })) as User;

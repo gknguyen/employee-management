@@ -15,11 +15,7 @@ functions
 
 function login(endHere = true) {
   return errorHandler(
-    async (
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction,
-    ) => {
+    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
       const username = req.body.username as string;
       const password = req.body.password as string;
 
@@ -42,11 +38,7 @@ function login(endHere = true) {
 
 export function verifyToken(endHere = true) {
   return errorHandler(
-    async (
-      req: express.Request,
-      res: express.Response,
-      next: express.NextFunction,
-    ) => {
+    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
       const token = req.headers.token as string;
 
       const results = await authController.getVerify(token);

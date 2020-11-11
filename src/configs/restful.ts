@@ -1,6 +1,6 @@
 import { Model, BuildOptions, Op } from 'sequelize';
 
-export interface Restful {
+interface Restful {
   generateTable(): any;
 
   findOne(condition: any): any;

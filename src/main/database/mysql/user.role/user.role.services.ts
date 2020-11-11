@@ -1,12 +1,12 @@
 import { Restful } from '../../../../configs/interfaces';
 import { AnyModel } from '../../../../configs/sequelize';
-import TeamModel from './team.model';
+import UserRoleModel from './user.role.model';
 
-export default class TeamService implements Restful {
+export default class UserRoleService implements Restful {
   model: AnyModel;
 
   constructor() {
-    this.model = TeamModel;
+    this.model = UserRoleModel;
   }
 
   /** table name */

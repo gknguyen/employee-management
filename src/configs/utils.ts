@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-export function convertStringToNumber(string: string | undefined | undefined) {
+export function convertStringToNumber(string?: string) {
   if (string) return parseFloat(string);
   else return 0;
 }

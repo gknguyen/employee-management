@@ -22,6 +22,8 @@ const TeamModel = sequelize.define(
     },
     departmentId: {
       type: DataTypes.INTEGER,
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
       references: {
         model: DepartmentModel,
         key: 'id',
@@ -50,7 +52,6 @@ TeamModel.belongsTo(DepartmentModel, {
   targetKey: 'id',
   foreignKey: 'departmentId',
   as: 'department',
-  onDelete: 'CASCADE',
 });
 
 export default TeamModel;

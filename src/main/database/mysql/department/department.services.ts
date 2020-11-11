@@ -1,8 +1,8 @@
-import { Restful } from '../../../../configs/restful';
+import { Restful } from '../../../../configs/interfaces';
 import { AnyModel } from '../../../../configs/sequelize';
 import DepartmentModel from './department.model';
 
-class DepartmentService implements Restful {
+export default class DepartmentService implements Restful {
   model: AnyModel;
 
   constructor() {
@@ -23,19 +23,15 @@ class DepartmentService implements Restful {
   }
 
   /** post */
-  public createOne(data: object, condition: object) {
+  public createOne(data: object, condition?: object | null) {
     return this.model.create({ ...data }, { ...condition });
   }
-  public createMany(data: object[], condition: object) {
+  public createMany(data: object[], condition?: object | null) {
     return this.model.bulkCreate([...data], { ...condition });
   }
 
   /** get or post */
-  public async findOrCreate(condition: object) {
+  public async findOrCreate(condition?: object | null) {
     return this.model.findOrCreate({ ...condition });
   }
 }
-
-const departmentService = new DepartmentService();
-
-export default departmentService;

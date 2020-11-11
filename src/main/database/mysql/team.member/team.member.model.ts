@@ -23,6 +23,8 @@ const TeamMemberModel = sequelize.define(
     },
     teamId: {
       type: DataTypes.INTEGER,
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
       references: {
         model: TeamModel,
         key: 'id',
@@ -30,6 +32,8 @@ const TeamMemberModel = sequelize.define(
     },
     memberId: {
       type: DataTypes.INTEGER,
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
       references: {
         model: MemberModel,
         key: 'id',
@@ -54,7 +58,6 @@ TeamMemberModel.belongsTo(TeamModel, {
   targetKey: 'id',
   foreignKey: 'teamId',
   as: 'team',
-  onDelete: 'CASCADE',
 });
 
 /*
@@ -70,7 +73,6 @@ TeamMemberModel.belongsTo(MemberModel, {
   targetKey: 'id',
   foreignKey: 'memberId',
   as: 'member',
-  onDelete: 'CASCADE',
 });
 
 export default TeamMemberModel;

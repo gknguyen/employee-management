@@ -1,8 +1,8 @@
-import { Restful } from '../../../../configs/restful';
+import { Restful } from '../../../../configs/interfaces';
 import { AnyModel } from '../../../../configs/sequelize';
 import CEOModel from './ceo.model';
 
-class CEOService implements Restful {
+export default class CEOService implements Restful {
   model: AnyModel;
 
   constructor() {
@@ -21,21 +21,20 @@ class CEOService implements Restful {
   public findMany(condition: object) {
     return this.model.findAll({ ...condition });
   }
+  public findManyAndCount(condition: object) {
+    return this.model.findAndCountAll({ ...condition });
+  }
 
   /** post */
-  public createOne(data: object, condition: object) {
+  public createOne(data: object, condition?: object | null) {
     return this.model.create({ ...data }, { ...condition });
   }
-  public createMany(data: object[], condition: object) {
+  public createMany(data: object[], condition?: object | null) {
     return this.model.bulkCreate([...data], { ...condition });
   }
 
   /** get or post */
-  public async findOrCreate(condition: object) {
+  public async findOrCreate(condition?: object | null) {
     return this.model.findOrCreate({ ...condition });
   }
 }
-
-const ceoService = new CEOService();
-
-export default ceoService;
