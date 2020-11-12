@@ -12,6 +12,7 @@ import { getFilesizeInBytes } from '../configs/utils';
 import authRouter, { authorizedUserRole, verifyToken } from '../main/api/auth/auth.routes';
 import commonRouter from '../main/api/common/common.routes';
 import genaralRouter from '../main/api/general/general.routes';
+import cors from 'cors';
 
 let num = 0;
 
@@ -27,19 +28,6 @@ export default app;
 /**
 functions
 */
-
-function loadRoutes() {
-  app.use('/auth', authRouter);
-  app.use('/general', verifyToken(), genaralRouter);
-  app.use('/common', verifyToken(), authorizedUserRole(UserRole.admin), commonRouter);
-}
-
-function loadViews() {
-  app.use(express.static(join(__dirname, '../../build')));
-  app.get('/*', function (req, res) {
-    res.sendFile(path.join(__dirname, '../../build', 'index.html'));
-  });
-}
 
 function loadConfigs() {
   /* check file size */
@@ -84,8 +72,11 @@ function loadConfigs() {
   /** secure app by setting various HTTP headers */
   app.use(helmet());
 
-  /** compress HTTP responses */
-  app.use(compression());
+  /** enable cross-origin resource sharing (CORS)  */
+  app.use(cors());
+
+  /** for parsing cookies */
+  app.use(cookieParser());
 
   /** for parsing HTTP request type : application/json */
   app.use(express.json());
@@ -93,6 +84,19 @@ function loadConfigs() {
   /** for parsing HTTP request type :  application/x-www-form-urlencoded */
   app.use(express.urlencoded({ extended: true }));
 
-  /** for parsing cookies */
-  app.use(cookieParser());
+  /** compress HTTP responses */
+  app.use(compression());
+}
+
+function loadRoutes() {
+  app.use('/auth', authRouter);
+  app.use('/general', verifyToken(), genaralRouter);
+  app.use('/common', verifyToken(), authorizedUserRole(UserRole.admin), commonRouter);
+}
+
+function loadViews() {
+  app.use(express.static(join(__dirname, '../../build')));
+  app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, '../../build', 'index.html'));
+  });
 }

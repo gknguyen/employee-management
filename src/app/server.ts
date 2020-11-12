@@ -10,13 +10,17 @@ import fs from 'fs';
 import path from 'path';
 
 const logger = debug('employee-management:server');
+
 const ssl = {
   key: fs.readFileSync(path.resolve('SSL/test-ssl.local.key')),
   cert: fs.readFileSync(path.resolve('SSL/test-ssl.local.crt')),
 };
 
+const HTTP = http.createServer(app);
+const HTTPS = https.createServer(ssl, app);
+
 /**
- * connect to Database
+ * connect to Databases
  * */
 sequelize
   .authenticate()
@@ -38,13 +42,11 @@ sequelize
   .catch((err: Error) => console.error(`Unable to sync with the database: ${err.toString()}`));
 
 /**
- * start server with HTTP
+ * enable server to listen to HTTP requests
  * */
-http.createServer(app).listen(ENV.HTTP_PORT, () => logger(`HTTP : Listening on ${ENV.HTTP_PORT}`));
+HTTP.listen(ENV.HTTP_PORT, () => logger(`HTTP : Listening on ${ENV.HTTP_PORT}`));
 
 /**
- * start server with HTTPS
+ * enable server to listen to HTTPS requests
  * */
-https
-  .createServer(ssl, app)
-  .listen(ENV.HTTPS_PORT, () => logger(`HTTPS : Listening on ${ENV.HTTPS_PORT}`));
+HTTPS.listen(ENV.HTTPS_PORT, () => logger(`HTTPS : Listening on ${ENV.HTTPS_PORT}`));

@@ -5,10 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node ./lib/app/server",
+    "ci:prod": "npm install --frozen-lockfile --ignore-scripts --prod",
     "build": "cross-env NODE_ENV=production tsc",
     "start:dev": "cross-env NODE_ENV=development && set DEBUG=employee-management:server && ts-node-dev --respawn --transpile-only ./src/app/server --watch ./src",
     "start:prod": "cross-env NODE_ENV=production tsc && node ./lib/app/server.js",
-    "ci:prod": "npm install --frozen-lockfile --ignore-scripts --prod",
     "test": "cross-env NODE_ENV=test mocha ./src/tests/*.test.ts --watch --reporter-options reportDir=test-reports/mochawesome --reporter-options jsonReport=true",
     "coverage": "cross-env NODE_ENV=test nyc mocha ./src/**/*.test.ts --reporter-options reportDir=test-reports/coverage",
     "prettier": "prettier --write ./src/**/*.ts"
@@ -24,9 +24,9 @@
   },
   "homepage": "https://github.com/gknguyen/employee-management#readme",
   "dependencies": {
-    "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "cryptojs": "^2.5.3",
     "debug": "^4.2.0",
@@ -48,6 +48,7 @@
     "@types/chai": "^4.2.13",
     "@types/compression": "^1.7.0",
     "@types/cookie-parser": "^1.4.2",
+    "@types/cors": "^2.8.8",
     "@types/debug": "^4.1.5",
     "@types/express": "^4.17.8",
     "@types/faker": "^5.1.2",
