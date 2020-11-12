@@ -44,7 +44,8 @@ function createCEO(endHere = true) {
 function createMembers(endHere = true) {
   return errorHandler(
     async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-      const numberOfMember = convertStringToNumber(req.body.numberOfMember as string);
+      const numberOfMember = req.body.numberOfMember as number;
+
       const results = await commonController.createMembers(numberOfMember);
 
       if (endHere) {
