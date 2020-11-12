@@ -5,3 +5,4 @@ test-reports/
 # files
 errorLog*.txt
 access*.log
+.env
