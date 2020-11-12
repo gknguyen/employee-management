@@ -1,6 +1,6 @@
 # employee-management
 
-Techbase VN test (Back-end system)
+Description: Back-end system demo
 
 Design pattern: Typescript
 
@@ -16,11 +16,16 @@ Database: MySQL
 
 ORM: Sequelize
 
-Unit test tool: mocha, chai
+Unit test tool: mocha, chai, nyc
 
-Unit test report: mochawesome
+Unit test report: mochawesome, lcov
 
 API test: Postman
+
+============================================================================
+start project
+
+- \$ npm run start:dev
 
 ============================================================================
 APIs are store in Postman-APIs folder for testing.
@@ -40,6 +45,13 @@ with JWT in the headers to get data with limit 1500 members (no JWT => unauthori
 ============================================================================
 unit tests
 
-1./ run script "npm run test"
+- \$ npm run test
 
-2./ html report will be generated in folder test-reports
+  => html report will be generated in folder test-reports
+
+============================================================================
+coverage tests
+
+- \$ npm run coverage
+
+  => html report will be generated in folder test-reports

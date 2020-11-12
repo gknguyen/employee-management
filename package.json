@@ -1,7 +1,7 @@
 {
   "name": "employee-management",
   "version": "1.0.0",
-  "description": "Techbase test (back-end system)",
+  "description": "Back-end system demo",
   "main": "server.js",
   "scripts": {
     "start": "node ./lib/app/server",
