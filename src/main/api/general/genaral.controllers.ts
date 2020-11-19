@@ -1,16 +1,15 @@
 import STATUS_CODE from 'http-status';
-import { HTTPdata } from '../../../configs/interfaces';
-import { CEO } from '../../database/mysql/ceo/ceo.model';
-import DepartmentModel, { Department } from '../../database/mysql/department/department.model';
-import MemberModel from '../../database/mysql/member/member.model';
-import TeamMemberModel, { TeamMember } from '../../database/mysql/team.member/team.member.model';
-import TeamModel, { Team } from '../../database/mysql/team/team.model';
+import { HTTPdata } from '../../../configs/constants/interfaces';
+import DepartmentModel from '../../database/mysql/model/department.model';
+import MemberModel from '../../database/mysql/model/member.model';
+import TeamMemberModel, { TeamMember } from '../../database/mysql/model/team.member.model';
+import TeamModel, { Team } from '../../database/mysql/model/team.model';
 import MYSQL from '../../database/mysql/mysqlService';
 
 class GeneralController {
   /** ================================================================================== */
   public getMembersInTreeModel = async () => {
-    const results = {
+    const result = {
       code: 0,
       message: '',
       data: null,
@@ -18,7 +17,7 @@ class GeneralController {
 
     try {
       /** get data */
-      const data = await MYSQL.ceoService.findManyAndCount({
+      const data = await MYSQL.ceo.findAndCountAll({
         attributes: ['name'],
         include: [
           {
@@ -53,32 +52,32 @@ class GeneralController {
         ],
       });
 
-      /** return responses */
+      /** return result */
       if (data.rows && data.rows.length > 0) {
-        results.code = STATUS_CODE.OK;
-        results.message = 'successfully';
-        results.data = {
+        result.code = STATUS_CODE.OK;
+        result.message = 'successfully';
+        result.data = {
           number: data.count,
           ceos: data.rows,
         };
-        return results;
+        return result;
       } else {
-        results.code = STATUS_CODE.PRECONDITION_FAILED;
-        results.message = 'no result';
-        results.data = [];
-        return results;
+        result.code = STATUS_CODE.EXPECTATION_FAILED;
+        result.message = 'no result';
+        result.data = [];
+        return result;
       }
     } catch (err) {
-      results.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
-      results.message = err.toString();
-      results.data = err;
-      return results;
+      result.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
+      result.message = err.toString();
+      result.data = err;
+      return result;
     }
   };
 
   /** ================================================================================== */
   public getLimit1500Members = async () => {
-    const results = {
+    const result = {
       code: 0,
       message: '',
       data: null,
@@ -88,18 +87,18 @@ class GeneralController {
       let memberNumber = 0;
 
       /** get ceo */
-      const ceo = await MYSQL.ceoService.findOne({
+      const ceo = await MYSQL.ceo.findOne({
         attributes: ['id', 'name'],
       });
 
       if (!ceo) {
-        results.code = STATUS_CODE.PRECONDITION_FAILED;
-        results.message = 'ceo not found';
-        return results;
+        result.code = STATUS_CODE.PRECONDITION_FAILED;
+        result.message = 'ceo not found';
+        return result;
       }
 
       /** get the list of department manager */
-      const departmentList = await MYSQL.departmentService.findMany({
+      const departmentList = await MYSQL.department.findAll({
         attributes: ['id', 'manager'],
         where: { ceoId: ceo.id },
       });
@@ -107,7 +106,7 @@ class GeneralController {
       /** get the list of team for each department manager */
       let teamList: Team[] = [];
       for (const department of departmentList) {
-        const teams = await MYSQL.teamService.findMany({
+        const teams = await MYSQL.team.findAll({
           attributes: ['id', 'project'],
           where: { departmentId: department.id },
         });
@@ -117,7 +116,7 @@ class GeneralController {
       /** get the list of team member for each team */
       let teamMemberList: TeamMember[] = [];
       for (const team of teamList) {
-        const teamMembers = await MYSQL.teamMemberService.findMany({
+        const teamMembers = await MYSQL.teamMember.findAll({
           attributes: ['id'],
           where: { teamId: team.id },
           include: [
@@ -145,16 +144,16 @@ class GeneralController {
         memberNumber += teamMemberList.length;
       }
 
-      /** return responses */
-      results.code = STATUS_CODE.OK;
-      results.message = 'successfully';
-      results.data = { memberNumber, ceo, departmentList, teamList, teamMemberList };
-      return results;
+      /** return result */
+      result.code = STATUS_CODE.OK;
+      result.message = 'successfully';
+      result.data = { memberNumber, ceo, departmentList, teamList, teamMemberList };
+      return result;
     } catch (err) {
-      results.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
-      results.message = err.toString();
-      results.data = err;
-      return results;
+      result.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
+      result.message = err.toString();
+      result.data = err;
+      return result;
     }
   };
 }

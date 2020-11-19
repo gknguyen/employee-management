@@ -1,13 +1,12 @@
 import debug from 'debug';
+import fs from 'fs';
 import http from 'http';
 import https from 'https';
-import ENV from '../configs/env';
-import sequelize from '../configs/sequelize';
-import MYSQL from '../main/database/mysql/mysqlService';
-import { createDumpData } from './dumpData';
-import app from './express';
-import fs from 'fs';
 import path from 'path';
+import ENV from '../configs/constants/env';
+import sequelize from '../configs/sequelize';
+import app from './express';
+import { generateDumpData, generateTable } from './initialize.data';
 
 const logger = debug('employee-management:server');
 
@@ -29,16 +28,8 @@ sequelize
 
 sequelize
   .sync({ alter: false, force: false })
-  .then(() => {
-    console.log(`initialize table: ${MYSQL.ceoService.generateTable()}`);
-    console.log(`initialize table: ${MYSQL.departmentService.generateTable()}`);
-    console.log(`initialize table: ${MYSQL.teamService.generateTable()}`);
-    console.log(`initialize table: ${MYSQL.memberService.generateTable()}`);
-    console.log(`initialize table: ${MYSQL.teamMemberService.generateTable()}`);
-    console.log(`initialize table: ${MYSQL.userService.generateTable()}`);
-    console.log(`initialize table: ${MYSQL.userRoleService.generateTable()}`);
-  })
-  .then(async () => createDumpData())
+  .then(() => generateTable())
+  .then(async () => generateDumpData())
   .catch((err: Error) => console.error(`Unable to sync with the database: ${err.toString()}`));
 
 /**

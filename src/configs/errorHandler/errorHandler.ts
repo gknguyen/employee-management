@@ -4,8 +4,8 @@ import jsonwebtoken from 'jsonwebtoken';
 import moment from 'moment-timezone';
 import os from 'os';
 import { join } from 'path';
-import ENV from '../env';
-import { UserInfo } from '../interfaces';
+import ENV from '../constants/env';
+import { UserInfo } from '../constants/interfaces';
 import { getFilesizeInBytes } from '../utils';
 
 let num = 0;
@@ -47,10 +47,6 @@ const errorHandler = (fn: any) => (
           `error: ${JSON.stringify(error)}` +
           os.EOL +
           `username: ${JSON.stringify(userInfo?.username)}` +
-          os.EOL +
-          `query: ${JSON.stringify(req.query)}` +
-          os.EOL +
-          `body: ${JSON.stringify(req.body)}` +
           os.EOL,
 
         (err) => {

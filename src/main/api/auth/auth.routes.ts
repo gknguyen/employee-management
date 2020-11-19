@@ -3,11 +3,14 @@ import STATUS_CODE from 'http-status';
 import errorHandler from '../../../configs/errorHandler/errorHandler';
 import authController from './auth.controllers';
 import jsonwebtoken from 'jsonwebtoken';
-import { UserInfo } from '../../../configs/interfaces';
+import { UserInfo } from '../../../configs/constants/interfaces';
 
 const authRouter = Router();
 
+/** POST APIs */
 authRouter.post('/login', login());
+
+export default authRouter;
 
 /** ================================================================================== */
 /**
@@ -72,5 +75,3 @@ export function authorizedUserRole(authorizedRole: string) {
     },
   );
 }
-
-export default authRouter;

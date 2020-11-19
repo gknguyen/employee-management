@@ -1,9 +1,9 @@
 import STATUS_CODE from 'http-status';
 import jsonwebtoken from 'jsonwebtoken';
-import ENV from '../../../configs/env';
-import { HTTPdata, UserInfo } from '../../../configs/interfaces';
-import UserRoleModel from '../../database/mysql/user.role/user.role.model';
-import { User } from '../../database/mysql/user/user.model';
+import ENV from '../../../configs/constants/env';
+import { HTTPdata, UserInfo } from '../../../configs/constants/interfaces';
+import { User } from '../../database/mysql/model/user.model';
+import UserRoleModel from '../../database/mysql/model/user.role.model';
 import MYSQL from '../../database/mysql/mysqlService';
 
 const Crypto = require('cryptojs').Crypto;
@@ -31,27 +31,27 @@ class AuthController {
 
   /** ================================================================================== */
   public login = async (username?: string | null, password?: string | null) => {
-    const results = {
+    const result = {
       code: 0,
       message: '',
       data: null,
     } as HTTPdata;
 
-    try {
-      /** chec input */
-      if (!username) {
-        results.code = STATUS_CODE.PRECONDITION_FAILED;
-        results.message = 'username is missing';
-        return results;
-      }
-      if (!password) {
-        results.code = STATUS_CODE.PRECONDITION_FAILED;
-        results.message = 'password is missing';
-        return results;
-      }
+    /** chec input */
+    if (!username) {
+      result.code = STATUS_CODE.PRECONDITION_FAILED;
+      result.message = 'username is missing';
+      return result;
+    }
+    if (!password) {
+      result.code = STATUS_CODE.PRECONDITION_FAILED;
+      result.message = 'password is missing';
+      return result;
+    }
 
+    try {
       /** get user infomation */
-      const user = await MYSQL.userService.findOne({
+      const user = await MYSQL.user.findOne({
         attributes: ['id', 'username', 'password', 'authToken'],
         where: { username: username },
         include: [
@@ -64,9 +64,9 @@ class AuthController {
       });
 
       if (!user) {
-        results.code = STATUS_CODE.PRECONDITION_FAILED;
-        results.message = 'user not found';
-        return results;
+        result.code = STATUS_CODE.UNAUTHORIZED;
+        result.message = 'user not found';
+        return result;
       }
 
       /** check password */
@@ -79,26 +79,26 @@ class AuthController {
         await user.save();
 
         /** return responses */
-        results.code = STATUS_CODE.OK;
-        results.message = 'login successfully';
-        results.data = { token };
-        return results;
+        result.code = STATUS_CODE.OK;
+        result.message = 'login successfully';
+        result.data = { token };
+        return result;
       } else {
-        results.code = STATUS_CODE.PRECONDITION_FAILED;
-        results.message = 'password incorrect';
-        return results;
+        result.code = STATUS_CODE.UNAUTHORIZED;
+        result.message = 'password incorrect';
+        return result;
       }
     } catch (err) {
-      results.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
-      results.message = err.toString();
-      results.data = err;
-      return results;
+      result.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
+      result.message = err.toString();
+      result.data = err;
+      return result;
     }
   };
 
   /** ================================================================================== */
   public getVerify = async (token?: string | null) => {
-    const results = {
+    const result = {
       code: 0,
       message: '',
       data: null,
@@ -107,9 +107,9 @@ class AuthController {
     try {
       /** check token existed or not */
       if (!token) {
-        results.code = STATUS_CODE.UNAUTHORIZED;
-        results.message = 'token is missing';
-        return results;
+        result.code = STATUS_CODE.UNAUTHORIZED;
+        result.message = 'token is missing';
+        return result;
       }
 
       /** decode token to get user data */
@@ -117,92 +117,92 @@ class AuthController {
       const userInfo: UserInfo | null | undefined = decodedToken?.payload;
 
       if (!userInfo) {
-        results.code = STATUS_CODE.UNAUTHORIZED;
-        results.message = 'invalid token';
-        return results;
+        result.code = STATUS_CODE.UNAUTHORIZED;
+        result.message = 'invalid token';
+        return result;
       }
 
       /* check token TTL */
       const TTL = Math.round(new Date().getTime() / 1000);
       if (parseInt(decodedToken.payload.exp) < TTL) {
-        results.code = STATUS_CODE.UNAUTHORIZED;
-        results.message = 'token expired';
-        return results;
+        result.code = STATUS_CODE.UNAUTHORIZED;
+        result.message = 'token expired';
+        return result;
       }
 
       /* get user data */
-      const userData = await MYSQL.userService.findOne({
+      const userData = await MYSQL.user.findOne({
         attributes: ['username', 'authToken'],
         where: { username: userInfo.username },
       });
 
       if (!userData) {
-        results.code = STATUS_CODE.UNAUTHORIZED;
-        results.message = 'userData in DB not found';
-        return results;
+        result.code = STATUS_CODE.UNAUTHORIZED;
+        result.message = 'userData in DB not found';
+        return result;
       }
 
       /* verify token */
       if (userData.authToken === token) {
-        results.code = STATUS_CODE.OK;
-        results.message = 'valid token';
-        results.data = userInfo;
-        return results;
+        result.code = STATUS_CODE.OK;
+        result.message = 'valid token';
+        result.data = userInfo;
+        return result;
       } else {
-        results.code = STATUS_CODE.UNAUTHORIZED;
-        results.message = 'invalid token';
-        return results;
+        result.code = STATUS_CODE.UNAUTHORIZED;
+        result.message = 'invalid token';
+        return result;
       }
     } catch (err) {
-      results.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
-      results.message = err.toString();
-      results.data = err;
-      return results;
+      result.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
+      result.message = err.toString();
+      result.data = err;
+      return result;
     }
   };
 
   /** ================================================================================== */
   public authorizedUserRole = async (authorizedRole: string, role?: string | null) => {
-    const results = {
+    const result = {
       code: 0,
       message: '',
       data: null,
     } as HTTPdata;
 
-    try {
-      /** check inputs */
-      if (!role) {
-        results.code = STATUS_CODE.PRECONDITION_FAILED;
-        results.message = 'missing role in token';
-        return results;
-      }
+    /** check inputs */
+    if (!role) {
+      result.code = STATUS_CODE.PRECONDITION_FAILED;
+      result.message = 'missing role in token';
+      return result;
+    }
 
+    try {
       /** call query to get record */
-      const userRole = await MYSQL.userRoleService.findOne({
+      const userRole = await MYSQL.userRole.findOne({
         where: { role: role },
       });
 
       if (!userRole) {
-        results.code = STATUS_CODE.PRECONDITION_FAILED;
-        results.message = 'invalid role in token';
-        return results;
+        result.code = STATUS_CODE.PRECONDITION_FAILED;
+        result.message = 'invalid role in token';
+        return result;
       }
 
       /** check if role in token is authorized or not */
       if (userRole.role === authorizedRole) {
-        results.code = STATUS_CODE.OK;
-        results.message = 'authorized role';
-        return results;
+        result.code = STATUS_CODE.OK;
+        result.message = 'authorized role';
+        return result;
       } else {
-        results.code = STATUS_CODE.EXPECTATION_FAILED;
-        results.message = 'unauthorized role';
-        return results;
+        result.code = STATUS_CODE.EXPECTATION_FAILED;
+        result.message = 'unauthorized role';
+        return result;
       }
     } catch (err) {
-      results.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
-      results.message = err.toString();
-      results.data = err;
-      return results;
+      result.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
+      result.message = err.toString();
+      result.data = err;
+      return result;
     }
   };
 }

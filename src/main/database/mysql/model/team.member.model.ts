@@ -1,7 +1,7 @@
 import { BuildOptions, DataTypes, Model } from 'sequelize';
 import sequelize from '../../../../configs/sequelize';
-import MemberModel from '../member/member.model';
-import TeamModel from '../team/team.model';
+import MemberModel from './member.model';
+import TeamModel from './team.model';
 
 export interface TeamMember extends Model {
   readonly id: number;
@@ -9,11 +9,7 @@ export interface TeamMember extends Model {
   memberId: number;
 }
 
-export type TeamMemberModelStatic = typeof Model & {
-  new (values?: object, options?: BuildOptions): TeamMember;
-};
-
-const TeamMemberModel = sequelize.define(
+const TeamMemberModel = sequelize.define<TeamMember>(
   'team_member',
   {
     id: {
@@ -43,7 +39,7 @@ const TeamMemberModel = sequelize.define(
   {
     timestamps: false,
   },
-) as TeamMemberModelStatic;
+);
 
 /*
 association with Team table

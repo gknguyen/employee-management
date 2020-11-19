@@ -1,6 +1,6 @@
 import { BuildOptions, DataTypes, Model } from 'sequelize';
 import sequelize from '../../../../configs/sequelize';
-import CEOModel from '../ceo/ceo.model';
+import CEOModel from './ceo.model';
 
 export interface Department extends Model {
   readonly id: number;
@@ -8,11 +8,7 @@ export interface Department extends Model {
   manager: string;
 }
 
-export type DepartmentModelStatic = typeof Model & {
-  new (values?: object, options?: BuildOptions): Department;
-};
-
-const DepartmentModel = sequelize.define(
+const DepartmentModel = sequelize.define<Department>(
   'department',
   {
     id: {
@@ -37,7 +33,7 @@ const DepartmentModel = sequelize.define(
   {
     timestamps: false,
   },
-) as DepartmentModelStatic;
+);
 
 /*
 association with CEO table

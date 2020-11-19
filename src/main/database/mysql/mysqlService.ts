@@ -1,20 +1,20 @@
-import CEOService from './ceo/ceo.services';
-import DepartmentService from './department/department.services';
-import MemberService from './member/member.services';
-import TeamMemberService from './team.member/team.member.services';
-import TeamService from './team/team.services';
-import UserRoleService from './user.role/user.role.services';
-import UserService from './user/user.services';
+import CEOModel from './model/ceo.model';
+import DepartmentModel from './model/department.model';
+import MemberModel from './model/member.model';
+import TeamMemberModel from './model/team.member.model';
+import TeamModel from './model/team.model';
+import UserRoleModel from './model/user.role.model';
+import UserModel from './model/user.model';
 
 class MYSQLService {
-  public ceoService = new CEOService();
-  public departmentService = new DepartmentService();
-  public memberService = new MemberService();
-  public teamService = new TeamService();
-  public teamMemberService = new TeamMemberService();
+  public ceo = CEOModel;
+  public department = DepartmentModel;
+  public member = MemberModel;
+  public team = TeamModel;
+  public teamMember = TeamMemberModel;
 
-  public userService = new UserService();
-  public userRoleService = new UserRoleService();
+  public user = UserModel;
+  public userRole = UserRoleModel;
 }
 
 const MYSQL = new MYSQLService();

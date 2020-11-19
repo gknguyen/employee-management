@@ -1,12 +1,14 @@
 import express, { Router } from 'express';
 import STATUS_CODE from 'http-status';
 import errorHandler from '../../../configs/errorHandler/errorHandler';
-import { convertStringToNumber } from '../../../configs/utils';
 import commonController from './common.controllers';
 
 const commonRouter = Router();
 
+/** POST APIs */
 commonRouter.post('/createDumpData', createCEO(false), createMembers(false), createTeamMembers());
+
+export default commonRouter;
 
 /** ================================================================================== */
 /**
@@ -82,5 +84,3 @@ function createTeamMembers(endHere = true) {
     },
   );
 }
-
-export default commonRouter;

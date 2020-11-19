@@ -8,6 +8,6 @@
   "timeout": "20000",
   "ui": "bdd",
   "watch": false,
-  "watch-files": ["./src/tests/*.test.ts"],
+  "watch-files": ["./src/**/*.test.ts"],
   "watch-ignore": ["lib/vendor"]
 }

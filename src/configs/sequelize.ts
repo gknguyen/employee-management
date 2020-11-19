@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import ENV from './env';
+import ENV from './constants/env';
 
 const sequelize = new Sequelize(ENV.APP_DB_URL, {
   logging: false,

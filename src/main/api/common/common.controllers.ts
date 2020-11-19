@@ -1,11 +1,8 @@
 import faker from 'faker';
 import STATUS_CODE from 'http-status';
 import times from 'lodash.times';
-import { HTTPdata } from '../../../configs/interfaces';
-import { CEO } from '../../database/mysql/ceo/ceo.model';
-import { Department } from '../../database/mysql/department/department.model';
-import { Member } from '../../database/mysql/member/member.model';
-import { Team } from '../../database/mysql/team/team.model';
+import { HTTPdata } from '../../../configs/constants/interfaces';
+import { Department } from '../../database/mysql/model/department.model';
 import MYSQL from '../../database/mysql/mysqlService';
 
 class CommonController {
@@ -15,116 +12,112 @@ class CommonController {
     numberOfTeamPerDepartment?: number | null,
     numberOfMember?: number | null,
   ) => {
-    const results = {
+    const result = {
       code: 0,
       message: '',
       data: null,
     } as HTTPdata;
 
-    try {
-      /** check input */
-      if (!numberOfDepartment) {
-        results.code = STATUS_CODE.PRECONDITION_FAILED;
-        results.message = 'please input numberOfDepartment';
-        return results;
-      }
-      if (!numberOfTeamPerDepartment) {
-        results.code = STATUS_CODE.PRECONDITION_FAILED;
-        results.message = 'please input numberOfTeamPerDepartment';
-        return results;
-      }
-      if (!numberOfMember) {
-        results.code = STATUS_CODE.PRECONDITION_FAILED;
-        results.message = 'please input numberOfTeamPerDepartment';
-        return results;
-      }
+    /** check input */
+    if (!numberOfDepartment) {
+      result.code = STATUS_CODE.PRECONDITION_FAILED;
+      result.message = 'please input numberOfDepartment';
+      return result;
+    }
+    if (!numberOfTeamPerDepartment) {
+      result.code = STATUS_CODE.PRECONDITION_FAILED;
+      result.message = 'please input numberOfTeamPerDepartment';
+      return result;
+    }
+    if (!numberOfMember) {
+      result.code = STATUS_CODE.PRECONDITION_FAILED;
+      result.message = 'please input numberOfTeamPerDepartment';
+      return result;
+    }
 
+    try {
       const promises: any[] = [];
 
       /** ceo */
-      const ceo = await MYSQL.ceoService.createOne({
+      const ceo = await MYSQL.ceo.create({
         name: faker.name.firstName(),
       });
 
       /** department */
       for (let i = 0; i < numberOfDepartment; i++) {
-        const department = (await MYSQL.departmentService.createOne(
-          {
-            ceoId: ceo.id,
-            manager: faker.name.firstName(),
-          },
-          null,
-        )) as Department;
+        const department = (await MYSQL.department.create({
+          ceoId: ceo.id,
+          manager: faker.name.firstName(),
+        })) as Department;
 
         /** team */
         for (let i = 0; i < numberOfTeamPerDepartment; i++) {
           promises.push(
-            MYSQL.teamService.createOne(
-              {
-                departmentId: department.id,
-                project: faker.commerce.productName(),
-              },
-              null,
-            ),
+            MYSQL.team.create({
+              departmentId: department.id,
+              project: faker.commerce.productName(),
+            }),
           );
         }
       }
 
       await Promise.all(promises);
 
-      results.code = STATUS_CODE.OK;
-      results.message = 'successfully';
-      results.data = ceo;
-      return results;
+      /** return result */
+      result.code = STATUS_CODE.OK;
+      result.message = 'successfully';
+      result.data = ceo;
+      return result;
     } catch (err) {
-      results.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
-      results.message = err.toString();
-      results.data = err;
-      return results;
+      result.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
+      result.message = err.toString();
+      result.data = err;
+      return result;
     }
   };
 
   /** ================================================================================== */
   public createMembers = async (numberOfMember: number) => {
-    const results = {
+    const result = {
       code: 0,
       message: '',
       data: null,
     } as HTTPdata;
 
     try {
-      const member = await MYSQL.memberService.createMany(
+      const member = await MYSQL.member.bulkCreate(
         times(numberOfMember, () => ({
           name: faker.name.firstName(),
         })),
       );
 
-      results.code = STATUS_CODE.OK;
-      results.message = 'successfully';
-      results.data = member;
-      return results;
+      /** return result */
+      result.code = STATUS_CODE.OK;
+      result.message = 'successfully';
+      result.data = member;
+      return result;
     } catch (err) {
-      results.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
-      results.message = err.toString();
-      results.data = err;
-      return results;
+      result.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
+      result.message = err.toString();
+      result.data = err;
+      return result;
     }
   };
 
   /** ================================================================================== */
   public createTeamMembers = async () => {
-    const results = {
+    const result = {
       code: 0,
       message: '',
       data: null,
     } as HTTPdata;
 
     try {
-      const teams = await MYSQL.teamService.findMany({
+      const teams = await MYSQL.team.findAll({
         attributes: ['id'],
       });
 
-      const members = await MYSQL.memberService.findMany({
+      const members = await MYSQL.member.findAll({
         attributes: ['id'],
       });
 
@@ -139,16 +132,17 @@ class CommonController {
         }
       }
 
-      MYSQL.teamMemberService.createMany(dataList);
+      MYSQL.teamMember.bulkCreate(dataList);
 
-      results.code = STATUS_CODE.OK;
-      results.message = 'successfully';
-      return results;
+      /** return result */
+      result.code = STATUS_CODE.OK;
+      result.message = 'successfully';
+      return result;
     } catch (err) {
-      results.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
-      results.message = err.toString();
-      results.data = err;
-      return results;
+      result.code = STATUS_CODE.INTERNAL_SERVER_ERROR;
+      result.message = err.toString();
+      result.data = err;
+      return result;
     }
   };
 }

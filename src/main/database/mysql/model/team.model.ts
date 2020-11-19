@@ -1,6 +1,6 @@
 import { BuildOptions, DataTypes, Model } from 'sequelize';
 import sequelize from '../../../../configs/sequelize';
-import DepartmentModel from '../department/department.model';
+import DepartmentModel from './department.model';
 
 export interface Team extends Model {
   readonly id: number;
@@ -8,11 +8,7 @@ export interface Team extends Model {
   project: string;
 }
 
-export type TeamModelStatic = typeof Model & {
-  new (values?: object, options?: BuildOptions): Team;
-};
-
-const TeamModel = sequelize.define(
+const TeamModel = sequelize.define<Team>(
   'team',
   {
     id: {
@@ -37,7 +33,7 @@ const TeamModel = sequelize.define(
   {
     timestamps: false,
   },
-) as TeamModelStatic;
+);
 
 /*
 association with Department table

@@ -5,8 +5,11 @@ import generalController from './genaral.controllers';
 
 const genaralRouter = Router();
 
+/** GET APIs */
 genaralRouter.get('/getMembersInTreeModel', getMembersInTreeModel());
 genaralRouter.get('/getLimit1500Members', getLimit1500Members());
+
+export default genaralRouter;
 
 /** ================================================================================== */
 /**
@@ -52,5 +55,3 @@ function getLimit1500Members(endHere = true) {
     },
   );
 }
-
-export default genaralRouter;

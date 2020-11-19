@@ -4,13 +4,15 @@
   "description": "Back-end system demo",
   "main": "server.js",
   "scripts": {
-    "start": "node ./lib/app/server",
-    "ci:prod": "npm install --frozen-lockfile --ignore-scripts --prod",
+    "ci:prod": "npm ci --only=production",
     "build": "cross-env NODE_ENV=production tsc",
+    "start": "node ./lib/app/server",
     "start:dev": "cross-env NODE_ENV=development && set DEBUG=employee-management:server && ts-node-dev --respawn --transpile-only ./src/app/server --watch ./src",
     "start:prod": "cross-env NODE_ENV=production tsc && node ./lib/app/server.js",
-    "test": "cross-env NODE_ENV=test mocha ./src/tests/*.test.ts --watch --reporter-options reportDir=test-reports/mochawesome --reporter-options jsonReport=true",
-    "coverage": "cross-env NODE_ENV=test nyc mocha ./src/**/*.test.ts --reporter-options reportDir=test-reports/coverage",
+    "test:all": "cross-env NODE_ENV=test mocha --watch ./src/**/*.test.ts --reporter-options reportDir=test-reports/all --reporter-options jsonReport=true",
+    "test:ceo": "cross-env NODE_ENV=test mocha ./src/main/api/ceo/*.test.ts --watch --reporter-options reportDir=test-reports/ceo --reporter-options jsonReport=true",
+    "coverage:all": "cross-env NODE_ENV=test nyc mocha ./src/**/*.test.ts --reporter-options reportDir=test-reports/all --reporter-options jsonReport=true",
+    "coverage:ceo": "cross-env NODE_ENV=test nyc --include src/main/api/ceo/*.controllers.ts --exclude src/main/api/ceo/*.test.ts --report-dir test-reports/ceo/coverage --temp-dir test-reports/ceo/.nyc_output mocha ./src/main/api/ceo/*.test.ts --reporter-options reportDir=test-reports/ceo",
     "prettier": "prettier --write ./src/**/*.ts"
   },
   "repository": {

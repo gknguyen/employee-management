@@ -6,11 +6,7 @@ export interface CEO extends Model {
   name: string;
 }
 
-export type CEOModelStatic = typeof Model & {
-  new (values?: object, options?: BuildOptions): CEO;
-};
-
-const CEOModel = sequelize.define(
+const CEOModel = sequelize.define<CEO>(
   'ceo',
   {
     id: {
@@ -26,6 +22,6 @@ const CEOModel = sequelize.define(
   {
     timestamps: false,
   },
-) as CEOModelStatic;
+);
 
 export default CEOModel;

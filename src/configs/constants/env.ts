@@ -1,12 +1,16 @@
 import dotenv from 'dotenv';
-import { convertStringToNumber } from './utils';
+import { convertStringToNumber } from '../utils';
 
 dotenv.config();
 
 const ENV = {
   /** main */
   NODE_ENV: process.env.NODE_ENV || 'development',
-  HTTP_PORT: convertStringToNumber(process.env.HTTP_PORT || '3000'),
+  HTTP_PORT: convertStringToNumber(
+    process.env.NODE_ENV === 'test'
+      ? process.env.TEST_PORT || '3200'
+      : process.env.HTTP_PORT || '3000',
+  ),
   HTTPS_PORT: convertStringToNumber(process.env.HTTPS_PORT || '4000'),
 
   /** JWT */
