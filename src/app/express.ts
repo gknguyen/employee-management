@@ -13,6 +13,7 @@ import authRouter, { authorizedUserRole, verifyToken } from '../main/api/auth/au
 import commonRouter from '../main/api/common/common.routes';
 import genaralRouter from '../main/api/general/general.routes';
 import cors from 'cors';
+import ceoRouter from '../main/api/ceo/ceo.routes';
 
 let num = 0;
 
@@ -92,6 +93,7 @@ function loadRoutes() {
   app.use('/auth', authRouter);
   app.use('/general', verifyToken(), genaralRouter);
   app.use('/common', verifyToken(), authorizedUserRole(UserRole.admin), commonRouter);
+  app.use('/ceo', verifyToken(), ceoRouter);
 }
 
 function loadViews() {
