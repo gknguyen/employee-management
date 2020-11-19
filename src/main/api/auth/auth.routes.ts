@@ -14,8 +14,8 @@ export default authRouter;
 
 /** ================================================================================== */
 /**
-functions
-*/
+ * functions
+ * */
 
 function login(endHere = true) {
   return errorHandler(

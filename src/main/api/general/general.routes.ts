@@ -13,8 +13,8 @@ export default genaralRouter;
 
 /** ================================================================================== */
 /**
-functions
-*/
+ * functions
+ * */
 
 function getMembersInTreeModel(endHere = true) {
   return errorHandler(

@@ -13,7 +13,8 @@
     "test:ceo": "cross-env NODE_ENV=test mocha ./src/main/api/ceo/*.test.ts --watch --reporter-options reportDir=test-reports/ceo --reporter-options jsonReport=true",
     "coverage:all": "cross-env NODE_ENV=test nyc mocha ./src/**/*.test.ts --reporter-options reportDir=test-reports/all --reporter-options jsonReport=true",
     "coverage:ceo": "cross-env NODE_ENV=test nyc --include src/main/api/ceo/*.controllers.ts --exclude src/main/api/ceo/*.test.ts --report-dir test-reports/ceo/coverage --temp-dir test-reports/ceo/.nyc_output mocha ./src/main/api/ceo/*.test.ts --reporter-options reportDir=test-reports/ceo",
-    "prettier": "prettier --write ./src/**/*.ts"
+    "prettier": "prettier --write ./src/**/*.ts",
+    "tslint": "tslint -p . -c tslint.json ./src/**/*.ts"
   },
   "repository": {
     "type": "git",

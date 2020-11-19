@@ -21,8 +21,8 @@ export default ceoRouter;
 
 /** ================================================================================== */
 /**
-functions
-*/
+ * functions
+ * */
 
 function createCEO(endHere = true) {
   return errorHandler(

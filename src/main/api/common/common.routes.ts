@@ -12,8 +12,8 @@ export default commonRouter;
 
 /** ================================================================================== */
 /**
-functions
-*/
+ * functions
+ * */
 
 function createCEO(endHere = true) {
   return errorHandler(

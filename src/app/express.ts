@@ -26,8 +26,8 @@ export default app;
 
 /** ================================================================================== */
 /**
-functions
-*/
+ * functions
+ * */
 
 function loadConfigs() {
   /* check file size */
