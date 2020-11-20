@@ -32,19 +32,19 @@ class CEOController {
   };
 
   /** ================================================================================== */
-  public getCEO = async (ceoName?: string | null) => {
+  public getCEO = async (ceoId?: number | null) => {
     const result = { ...RESULT };
 
     /** check inputs */
-    if (!ceoName) {
+    if (!ceoId) {
       result.code = STATUS_CODE.PRECONDITION_FAILED;
-      result.message = 'please input ceo name';
+      result.message = 'please input ceo id';
       return result;
     }
 
     try {
       /** call query to get record */
-      const ceo = await MYSQL.ceo.findOne({ where: { name: ceoName } });
+      const ceo = await MYSQL.ceo.findOne({ where: { id: ceoId } });
 
       /** return result */
       if (ceo) {

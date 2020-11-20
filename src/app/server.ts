@@ -15,8 +15,8 @@ const ssl = {
   cert: fs.readFileSync(path.resolve('SSL/test-ssl.local.crt')),
 };
 
-const HTTP = http.createServer(app);
-const HTTPS = https.createServer(ssl, app);
+export const HTTP = http.createServer(app);
+export const HTTPS = https.createServer(ssl, app);
 
 /**
  * connect to Databases

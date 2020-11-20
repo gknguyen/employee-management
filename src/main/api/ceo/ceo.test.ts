@@ -1,63 +1,146 @@
-import { assert } from 'chai';
+import chai, { assert } from 'chai';
+import chaiHttp from 'chai-http';
+import STATUS_CODE from 'http-status';
+import { HTTP } from '../../../app/server';
 import MYSQL from '../../database/mysql/mysqlService';
-import ceoController from './ceo.controllers';
+import authController from '../auth/auth.controllers';
 
 const TEST_VAR = 'mocha test';
 const TEST_VAR_2 = 'mocha test 2';
 
+let TOKEN: string;
+
+chai.use(chaiHttp);
+
+// beforeEach(async () => {
+//   const loginUser = {
+//     username: 'admin',
+//     password: 'admin',
+//   };
+//   chai
+//     .request(HTTP)
+//     .post('/auth/login')
+//     .send(loginUser)
+//     .end(async (err, res) => {
+//       console.log('aaaa');
+
+//       assert.equal(res.body.code, STATUS_CODE.OK);
+//       assert.equal(typeof res.body.data, 'object');
+//       assert.equal(typeof res.body.data.token, 'string');
+//       TOKEN = await res.body.data.token;
+//     });
+// });
+
+before(async () => {
+  TOKEN = await (await authController.login('admin', 'admin')).data.token;
+});
+
 describe('ceo APIs', () => {
-  describe('create 1 ceo', () => {
+  describe('/ceo/createCEO', () => {
     describe('happy cases', () => {
       it('create successfully', async () => {
-        const ceoName = TEST_VAR;
-        const result = await ceoController.createCEO(ceoName);
-        assert.equal(result.message, 'create successfully');
+        const data = {
+          ceoName: TEST_VAR,
+        };
+        chai
+          .request(HTTP)
+          .post('/ceo/createCEO')
+          .set('token', TOKEN)
+          .send(data)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.OK);
+            assert.equal(res.body.message, 'create successfully');
+          });
       });
     });
 
     describe('unhappy cases : missing input', () => {
       it('ceoName = empty string', async () => {
-        const ceoName = '';
-        const result = await ceoController.createCEO(ceoName);
-        assert.equal(result.message, 'please input ceo name');
+        const data = {
+          ceoName: '',
+        };
+        chai
+          .request(HTTP)
+          .post('/ceo/createCEO')
+          .set('token', TOKEN)
+          .send(data)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.PRECONDITION_FAILED);
+            assert.equal(res.body.message, 'please input ceo name');
+          });
       });
       it('ceoName = null', async () => {
-        const ceoName = null;
-        const result = await ceoController.createCEO(ceoName);
-        assert.equal(result.message, 'please input ceo name');
+        const data = {
+          ceoName: null,
+        };
+        chai
+          .request(HTTP)
+          .post('/ceo/createCEO')
+          .set('token', TOKEN)
+          .send(data)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.PRECONDITION_FAILED);
+            assert.equal(res.body.message, 'please input ceo name');
+          });
       });
       it('ceoName = undefined', async () => {
-        const ceoName = undefined;
-        const result = await ceoController.createCEO(ceoName);
-        assert.equal(result.message, 'please input ceo name');
+        const data = {
+          ceoName: undefined,
+        };
+        chai
+          .request(HTTP)
+          .post('/ceo/createCEO')
+          .set('token', TOKEN)
+          .send(data)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.PRECONDITION_FAILED);
+            assert.equal(res.body.message, 'please input ceo name');
+          });
       });
     });
   });
 
-  describe('get 1 ceo', () => {
+  describe('/ceo/getCEO', () => {
+    let testId: number | null | undefined;
+
+    before(async () => {
+      const ceo = await MYSQL.ceo.findOne({ where: { name: TEST_VAR } });
+      if (ceo) testId = ceo.id;
+    });
+
     describe('happy cases', () => {
       it('get successfully', async () => {
-        const ceoName = TEST_VAR;
-        const result = await ceoController.getCEO(ceoName);
-        assert.equal(result.message, 'get successfully');
+        chai
+          .request(HTTP)
+          .get('/ceo/getCEO?ceoId=' + testId)
+          .set('token', TOKEN)
+          .end((err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.OK);
+            assert.equal(res.body.message, 'get successfully');
+          });
       });
     });
 
     describe('unhappy cases : missing input', () => {
-      it('ceoName = empty string', async () => {
-        const ceoName = '';
-        const result = await ceoController.getCEO(ceoName);
-        assert.equal(result.message, 'please input ceo name');
+      it('ceoId = null', async () => {
+        chai
+          .request(HTTP)
+          .get('/ceo/getCEO?ceoId=')
+          .set('token', TOKEN)
+          .end((err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.PRECONDITION_FAILED);
+            assert.equal(res.body.message, 'please input ceo id');
+          });
       });
-      it('ceoName = null', async () => {
-        const ceoName = null;
-        const result = await ceoController.getCEO(ceoName);
-        assert.equal(result.message, 'please input ceo name');
-      });
-      it('ceoName = undefined', async () => {
-        const ceoName = undefined;
-        const result = await ceoController.getCEO(ceoName);
-        assert.equal(result.message, 'please input ceo name');
+      it('ceoId = undefined', async () => {
+        chai
+          .request(HTTP)
+          .get('/ceo/getCEO')
+          .set('token', TOKEN)
+          .end((err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.PRECONDITION_FAILED);
+            assert.equal(res.body.message, 'please input ceo id');
+          });
       });
     });
   });
@@ -72,54 +155,114 @@ describe('ceo APIs', () => {
 
     describe('happy cases', () => {
       it('edit successfully', async () => {
-        const ceoName = TEST_VAR_2;
-        const result = await ceoController.editCEO(testId, ceoName);
-        assert.equal(result.message, 'edit successfully');
+        const data = {
+          ceoName: TEST_VAR_2,
+        };
+        chai
+          .request(HTTP)
+          .put('/ceo/editCEO?ceoId=' + testId)
+          .set('token', TOKEN)
+          .send(data)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.OK);
+            assert.equal(res.body.message, 'edit successfully');
+          });
       });
     });
 
     describe('unhappy cases : missing input', () => {
-      it('ceoName = 0', async () => {
-        const ceoId = 0;
-        const ceoName = TEST_VAR;
-        const result = await ceoController.editCEO(ceoId, ceoName);
-        assert.equal(result.message, 'please input ceo id');
+      it('ceoId = null', async () => {
+        const data = {
+          ceoName: TEST_VAR_2,
+        };
+        chai
+          .request(HTTP)
+          .put('/ceo/editCEO?ceoId=')
+          .set('token', TOKEN)
+          .send(data)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.PRECONDITION_FAILED);
+            assert.equal(res.body.message, 'please input ceo id');
+          });
       });
-      it('ceoName = null', async () => {
-        const ceoId = null;
-        const ceoName = TEST_VAR;
-        const result = await ceoController.editCEO(ceoId, ceoName);
-        assert.equal(result.message, 'please input ceo id');
-      });
-      it('ceoName = undefined', async () => {
-        const ceoId = undefined;
-        const ceoName = TEST_VAR;
-        const result = await ceoController.editCEO(ceoId, ceoName);
-        assert.equal(result.message, 'please input ceo id');
+      it('ceoId = undefined', async () => {
+        const data = {
+          ceoName: TEST_VAR_2,
+        };
+        chai
+          .request(HTTP)
+          .put('/ceo/editCEO')
+          .set('token', TOKEN)
+          .send(data)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.PRECONDITION_FAILED);
+            assert.equal(res.body.message, 'please input ceo id');
+          });
       });
 
       it('ceoName = empty string', async () => {
-        const ceoId = testId;
-        const ceoName = '';
-        const result = await ceoController.editCEO(ceoId, ceoName);
-        assert.equal(result.message, 'please input ceo name');
+        const data = {
+          ceoName: '',
+        };
+        chai
+          .request(HTTP)
+          .put('/ceo/editCEO?ceoId=' + testId)
+          .set('token', TOKEN)
+          .send(data)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.PRECONDITION_FAILED);
+            assert.equal(res.body.message, 'please input ceo name');
+          });
       });
       it('ceoName = null', async () => {
-        const ceoId = testId;
-        const ceoName = null;
-        const result = await ceoController.editCEO(ceoId, ceoName);
-        assert.equal(result.message, 'please input ceo name');
+        const data = {
+          ceoName: null,
+        };
+        chai
+          .request(HTTP)
+          .put('/ceo/editCEO?ceoId=' + testId)
+          .set('token', TOKEN)
+          .send(data)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.PRECONDITION_FAILED);
+            assert.equal(res.body.message, 'please input ceo name');
+          });
       });
       it('ceoName = undefined', async () => {
-        const ceoId = testId;
-        const ceoName = undefined;
-        const result = await ceoController.editCEO(ceoId, ceoName);
-        assert.equal(result.message, 'please input ceo name');
+        const data = {
+          ceoName: undefined,
+        };
+        chai
+          .request(HTTP)
+          .put('/ceo/editCEO?ceoId=' + testId)
+          .set('token', TOKEN)
+          .send(data)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.PRECONDITION_FAILED);
+            assert.equal(res.body.message, 'please input ceo name');
+          });
+      });
+    });
+
+    describe('unhappy cases : failed', () => {
+      it('ceoName = undefined', async () => {
+        const data = {
+          ceoName: TEST_VAR_2,
+        };
+        chai
+          .request(HTTP)
+          .put('/ceo/editCEO?ceoId=12323536546')
+          .set('token', TOKEN)
+          .send(data)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.EXPECTATION_FAILED);
+            assert.equal(res.body.message, 'update failed');
+          });
       });
     });
   });
 
-  describe('delete 1 ceo', () => {
+  describe('/ceo/deleteCEO', () => {
     let testId: number | null | undefined;
 
     before(async () => {
@@ -129,26 +272,52 @@ describe('ceo APIs', () => {
 
     describe('happy cases', () => {
       it('delete successfully', async () => {
-        const result = await ceoController.deleteCEO(testId);
-        assert.equal(result.message, 'delete successfully');
+        chai
+          .request(HTTP)
+          .delete('/ceo/deleteCEO?ceoId=' + testId)
+          .set('token', TOKEN)
+          .end(async (err, res) => {
+            console.log(testId);
+
+            assert.equal(res.body.code, STATUS_CODE.OK);
+            assert.equal(res.body.message, 'delete successfully');
+          });
       });
     });
 
     describe('unhappy cases : missing input', () => {
-      it('ceoName = 0', async () => {
-        const ceoId = 0;
-        const result = await ceoController.deleteCEO(ceoId);
-        assert.equal(result.message, 'please input ceo id');
+      it('ceoId = null', async () => {
+        chai
+          .request(HTTP)
+          .delete('/ceo/deleteCEO?ceoId=')
+          .set('token', TOKEN)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.PRECONDITION_FAILED);
+            assert.equal(res.body.message, 'please input ceo id');
+          });
       });
-      it('ceoName = null', async () => {
-        const ceoId = null;
-        const result = await ceoController.deleteCEO(ceoId);
-        assert.equal(result.message, 'please input ceo id');
+      it('ceoId = undefined', async () => {
+        chai
+          .request(HTTP)
+          .delete('/ceo/deleteCEO')
+          .set('token', TOKEN)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.PRECONDITION_FAILED);
+            assert.equal(res.body.message, 'please input ceo id');
+          });
       });
-      it('ceoName = undefined', async () => {
-        const ceoId = undefined;
-        const result = await ceoController.deleteCEO(ceoId);
-        assert.equal(result.message, 'please input ceo id');
+    });
+
+    describe('unhappy cases : failed', () => {
+      it('invalid ceoId', async () => {
+        chai
+          .request(HTTP)
+          .delete('/ceo/deleteCEO?ceoId=1000')
+          .set('token', TOKEN)
+          .end(async (err, res) => {
+            assert.equal(res.body.code, STATUS_CODE.EXPECTATION_FAILED);
+            assert.equal(res.body.message, 'delete failed');
+          });
       });
     });
   });

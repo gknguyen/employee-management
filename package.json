@@ -12,7 +12,7 @@
     "test:all": "cross-env NODE_ENV=test mocha --watch ./src/**/*.test.ts --reporter-options reportDir=test-reports/all --reporter-options jsonReport=true",
     "test:ceo": "cross-env NODE_ENV=test mocha ./src/main/api/ceo/*.test.ts --watch --reporter-options reportDir=test-reports/ceo --reporter-options jsonReport=true",
     "coverage:all": "cross-env NODE_ENV=test nyc mocha ./src/**/*.test.ts --reporter-options reportDir=test-reports/all --reporter-options jsonReport=true",
-    "coverage:ceo": "cross-env NODE_ENV=test nyc --include src/main/api/ceo/*.controllers.ts --exclude src/main/api/ceo/*.test.ts --report-dir test-reports/ceo/coverage --temp-dir test-reports/ceo/.nyc_output mocha ./src/main/api/ceo/*.test.ts --reporter-options reportDir=test-reports/ceo",
+    "coverage:ceo": "cross-env NODE_ENV=test nyc --include src/main/api/ceo/*.ts --exclude src/main/api/ceo/*.test.ts --report-dir test-reports/ceo/coverage --temp-dir test-reports/ceo/.nyc_output mocha ./src/main/api/ceo/*.test.ts --reporter-options reportDir=test-reports/ceo",
     "prettier": "prettier --write ./src/**/*.ts",
     "tslint": "tslint -p . -c tslint.json ./src/**/*.ts"
   },
@@ -62,6 +62,7 @@
     "babel": "^6.23.0",
     "babel-cli": "^6.26.0",
     "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "isparta": "^4.1.1",
     "istanbul": "^0.4.5",
     "mocha": "^8.1.3",

@@ -4,13 +4,13 @@ import MYSQL from '../main/database/mysql/mysqlService';
 const Crypto = require('cryptojs').Crypto;
 
 export const generateTable = () => {
-  console.log(`initialize table: ${MYSQL.ceo.getTableName()}`);
-  console.log(`initialize table: ${MYSQL.department.getTableName()}`);
-  console.log(`initialize table: ${MYSQL.team.getTableName()}`);
-  console.log(`initialize table: ${MYSQL.member.getTableName()}`);
-  console.log(`initialize table: ${MYSQL.teamMember.getTableName()}`);
-  console.log(`initialize table: ${MYSQL.user.getTableName()}`);
-  console.log(`initialize table: ${MYSQL.userRole.getTableName()}`);
+  MYSQL.ceo.getTableName();
+  MYSQL.department.getTableName();
+  MYSQL.team.getTableName();
+  MYSQL.member.getTableName();
+  MYSQL.teamMember.getTableName();
+  MYSQL.user.getTableName();
+  MYSQL.userRole.getTableName();
 };
 
 export const generateDumpData = async () => {

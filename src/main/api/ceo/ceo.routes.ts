@@ -1,6 +1,7 @@
 import express, { Router } from 'express';
 import STATUS_CODE from 'http-status';
 import errorHandler from '../../../configs/errorHandler/errorHandler';
+import { convertStringToNumber } from '../../../configs/utils';
 import ceoController from './ceo.controllers';
 
 const ceoRouter = Router();
@@ -9,13 +10,13 @@ const ceoRouter = Router();
 ceoRouter.post('/createCEO', createCEO());
 
 /** GET APIs */
-ceoRouter.post('/getCEO', getCEO());
+ceoRouter.get('/getCEO', getCEO());
 
 /** PUT APIs */
-ceoRouter.post('/editCEO', editCEO());
+ceoRouter.put('/editCEO', editCEO());
 
 /** DELETE APIs */
-ceoRouter.post('/deleteCEO', deleteCEO());
+ceoRouter.delete('/deleteCEO', deleteCEO());
 
 export default ceoRouter;
 
@@ -53,10 +54,10 @@ function getCEO(endHere = true) {
   return errorHandler(
     async (req: express.Request, res: express.Response, next: express.NextFunction) => {
       /** get data in request query */
-      const ceoName = req.query.ceoName as string;
+      const ceoId = convertStringToNumber(req.query.ceoId as string);
 
       /** execute logic and then get result */
-      const results = await ceoController.getCEO(ceoName);
+      const results = await ceoController.getCEO(ceoId);
 
       if (endHere) {
         /** send response to client-side (FE) */
@@ -78,7 +79,7 @@ function editCEO(endHere = true) {
   return errorHandler(
     async (req: express.Request, res: express.Response, next: express.NextFunction) => {
       /** get data in request query */
-      const ceoId = req.body.ceoId as number;
+      const ceoId = convertStringToNumber(req.query.ceoId as string);
 
       /** get data in request body */
       const ceoName = req.body.ceoName as string;
@@ -106,7 +107,7 @@ function deleteCEO(endHere = true) {
   return errorHandler(
     async (req: express.Request, res: express.Response, next: express.NextFunction) => {
       /** get data in request query */
-      const ceoId = req.body.ceoId as number;
+      const ceoId = convertStringToNumber(req.query.ceoId as string);
 
       /** execute logic and then get result */
       const results = await ceoController.deleteCEO(ceoId);
