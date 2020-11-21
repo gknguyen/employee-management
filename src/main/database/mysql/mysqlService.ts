@@ -1,10 +1,10 @@
-import CEOModel from './model/ceo.model';
-import DepartmentModel from './model/department.model';
-import MemberModel from './model/member.model';
-import TeamMemberModel from './model/team.member.model';
-import TeamModel from './model/team.model';
-import UserRoleModel from './model/user.role.model';
-import UserModel from './model/user.model';
+import CEOModel from './models/ceo.model';
+import DepartmentModel from './models/department.model';
+import MemberModel from './models/member.model';
+import TeamMemberModel from './models/team.member.model';
+import TeamModel from './models/team.model';
+import UserRoleModel from './models/user.role.model';
+import UserModel from './models/user.model';
 
 class MYSQLService {
   public ceo = CEOModel;

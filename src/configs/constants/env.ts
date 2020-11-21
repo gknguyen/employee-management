@@ -8,10 +8,14 @@ const ENV = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   HTTP_PORT: convertStringToNumber(
     process.env.NODE_ENV === 'test'
-      ? process.env.TEST_PORT || '3200'
+      ? process.env.HTTP_PORT_TEST || '3200'
       : process.env.HTTP_PORT || '3000',
   ),
-  HTTPS_PORT: convertStringToNumber(process.env.HTTPS_PORT || '4000'),
+  HTTPS_PORT: convertStringToNumber(
+    process.env.NODE_ENV === 'test'
+      ? process.env.HTTPS_PORT_TEST || '4200'
+      : process.env.HTTPS_PORT || '4000',
+  ),
 
   /** JWT */
   JWT_SECRET: process.env.JWT_SECRET || 'secret',

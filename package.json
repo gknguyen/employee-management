@@ -11,6 +11,8 @@
     "start:prod": "cross-env NODE_ENV=production tsc && node ./lib/app/server.js",
     "test:all": "cross-env NODE_ENV=test mocha --watch ./src/**/*.test.ts --reporter-options reportDir=test-reports/all --reporter-options jsonReport=true",
     "test:ceo": "cross-env NODE_ENV=test mocha ./src/main/api/ceo/*.test.ts --watch --reporter-options reportDir=test-reports/ceo --reporter-options jsonReport=true",
+    "test:auth": "cross-env NODE_ENV=test mocha ./src/main/api/auth/*.test.ts --watch --reporter-options reportDir=test-reports/auth --reporter-options jsonReport=true",
+    "test:general": "cross-env NODE_ENV=test mocha ./src/main/api/general/*.test.ts --watch --reporter-options reportDir=test-reports/general --reporter-options jsonReport=true",
     "coverage:all": "cross-env NODE_ENV=test nyc mocha ./src/**/*.test.ts --reporter-options reportDir=test-reports/all --reporter-options jsonReport=true",
     "coverage:ceo": "cross-env NODE_ENV=test nyc --include src/main/api/ceo/*.ts --exclude src/main/api/ceo/*.test.ts --report-dir test-reports/ceo/coverage --temp-dir test-reports/ceo/.nyc_output mocha ./src/main/api/ceo/*.test.ts --reporter-options reportDir=test-reports/ceo",
     "prettier": "prettier --write ./src/**/*.ts",

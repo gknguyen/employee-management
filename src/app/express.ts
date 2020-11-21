@@ -1,6 +1,6 @@
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
-import express from 'express';
+import express, { Router } from 'express';
 import fs from 'fs';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -9,11 +9,11 @@ import path, { join } from 'path';
 import { UserRole } from '../configs/constants/enum-list';
 import ENV from '../configs/constants/env';
 import { getFilesizeInBytes } from '../configs/utils';
-import authRouter, { authorizedUserRole, verifyToken } from '../main/api/auth/auth.routes';
-import commonRouter from '../main/api/common/common.routes';
-import genaralRouter from '../main/api/general/general.routes';
+import authRouter, { authorizedUserRole, verifyToken } from '../main/routes/auth.route';
+import commonRouter from '../main/routes/common.route';
+import genaralRouter from '../main/routes/general.route';
 import cors from 'cors';
-import ceoRouter from '../main/api/ceo/ceo.routes';
+import ceoRouter from '../main/routes/ceo.route';
 
 let num = 0;
 
@@ -90,10 +90,13 @@ function loadConfigs() {
 }
 
 function loadRoutes() {
-  app.use('/auth', authRouter);
-  app.use('/general', verifyToken(), genaralRouter);
-  app.use('/common', verifyToken(), authorizedUserRole(UserRole.admin), commonRouter);
-  app.use('/ceo', verifyToken(), ceoRouter);
+  const apiRouter = Router();
+  app.use('/api', apiRouter);
+
+  apiRouter.use('/auth', authRouter);
+  apiRouter.use('/general', verifyToken(), genaralRouter);
+  apiRouter.use('/common', verifyToken(), authorizedUserRole(UserRole.admin), commonRouter);
+  apiRouter.use('/ceo', verifyToken(), ceoRouter);
 }
 
 function loadViews() {
