@@ -1,12 +1,12 @@
-import { BuildOptions, DataTypes, Model } from 'sequelize';
-import sequelize from '../../../../configs/sequelize';
+import { DataTypes, Model } from 'sequelize';
+import mysql from '../mysql.auth';
 
 export interface Member extends Model {
   readonly id: number;
   name: string;
 }
 
-const MemberModel = sequelize.define<Member>(
+const MemberModel = mysql.define<Member>(
   'member',
   {
     id: {

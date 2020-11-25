@@ -3,7 +3,7 @@ import STATUS_CODE from 'http-status';
 import CONSTANTS from '../../configs/constants/constants';
 import errorHandler from '../../configs/errorHandler/errorHandler';
 import { convertStringToNumber } from '../../configs/utils';
-import MYSQL from '../database/mysql/mysqlService';
+import MYSQL from '../database/mysql/mysql.service';
 
 const ceoRouter = Router();
 

@@ -5,8 +5,8 @@ import times from 'lodash.times';
 import { Transaction } from 'sequelize';
 import CONSTANTS from '../../configs/constants/constants';
 import errorHandler from '../../configs/errorHandler/errorHandler';
-import sequelize from '../../configs/sequelize';
-import MYSQL from '../database/mysql/mysqlService';
+import mysql from '../database/mysql/mysql.auth';
+import MYSQL from '../database/mysql/mysql.service';
 
 const commonRouter = Router();
 
@@ -31,7 +31,7 @@ function createCEO(endHere = true) {
       const numberOfMember = req.body.numberOfMember as number;
 
       /** transaction for handling error when modify multiple tables in 1 go */
-      const transaction = (req.body.transaction as Transaction) || (await sequelize.transaction());
+      const transaction = (req.body.transaction as Transaction) || (await mysql.transaction());
       if (!req.body.transaction) req.body.transaction = transaction;
       result.transaction = transaction;
 
@@ -94,7 +94,7 @@ function createMembers(endHere = true) {
       const numberOfMember = req.body.numberOfMember as number;
 
       /** transaction for handling error when modify multiple tables in 1 go */
-      const transaction = (req.body.transaction as Transaction) || (await sequelize.transaction());
+      const transaction = (req.body.transaction as Transaction) || (await mysql.transaction());
       if (!req.body.transaction) req.body.transaction = transaction;
       result.transaction = transaction;
 
@@ -122,7 +122,7 @@ function createTeamMembers(endHere = true) {
   return errorHandler(
     async (req: express.Request, res: express.Response, next: express.NextFunction) => {
       /** transaction for handling error when modify multiple tables in 1 go */
-      const transaction = (req.body.transaction as Transaction) || (await sequelize.transaction());
+      const transaction = (req.body.transaction as Transaction) || (await mysql.transaction());
       if (!req.body.transaction) req.body.transaction = transaction;
       result.transaction = transaction;
 

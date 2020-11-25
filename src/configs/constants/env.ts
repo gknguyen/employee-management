@@ -32,8 +32,11 @@ const ENV = {
   ACCESS_LOG_FILE_MAX_SIZE: convertStringToNumber(process.env.ACCESS_LOG_FILE_MAX_SIZE || '20'),
   ERROR_LOG_FILE_MAX_SIZE: convertStringToNumber(process.env.ERROR_LOG_FILE_MAX_SIZE || '10'),
 
-  /** Mysql DB */
-  APP_DB_URL: process.env.APP_DB_URL || 'mysql://root:@127.0.0.1:3306/employee_management',
+  /** Databases */
+  MYSQL_CONNECTION:
+    process.env.MYSQL_CONNECTION || 'mysql://root:@127.0.0.1:3306/employee_management',
+  PGSQL_CONNECTION:
+    process.env.PGSQL_CONNECTION || 'postgres://root:@127.0.0.1:5432/employee_management',
 };
 
 export default ENV;

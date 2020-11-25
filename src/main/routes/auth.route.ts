@@ -6,7 +6,7 @@ import { UserInfo } from '../../configs/constants/interfaces';
 import errorHandler from '../../configs/errorHandler/errorHandler';
 import { comparePassword, getToken } from '../../configs/utils';
 import UserRoleModel from '../database/mysql/models/user.role.model';
-import MYSQL from '../database/mysql/mysqlService';
+import MYSQL from '../database/mysql/mysql.service';
 
 const authRouter = Router();
 

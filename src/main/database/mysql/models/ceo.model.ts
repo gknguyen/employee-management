@@ -1,12 +1,12 @@
-import { BuildOptions, DataTypes, Model } from 'sequelize';
-import sequelize from '../../../../configs/sequelize';
+import { DataTypes, Model } from 'sequelize';
+import mysql from '../mysql.auth';
 
 export interface CEO extends Model {
   readonly id: number;
   name: string;
 }
 
-const CEOModel = sequelize.define<CEO>(
+const CEOModel = mysql.define<CEO>(
   'ceo',
   {
     id: {

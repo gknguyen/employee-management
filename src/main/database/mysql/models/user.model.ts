@@ -1,5 +1,5 @@
-import { BuildOptions, DataTypes, Model } from 'sequelize';
-import sequelize from '../../../../configs/sequelize';
+import { DataTypes, Model } from 'sequelize';
+import mysql from '../mysql.auth';
 import UserRoleModel, { UserRole } from './user.role.model';
 
 export interface User extends Model {
@@ -10,7 +10,7 @@ export interface User extends Model {
   userRole: UserRole;
 }
 
-const UserModel = sequelize.define<User>(
+const UserModel = mysql.define<User>(
   'user',
   {
     id: {

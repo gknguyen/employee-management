@@ -6,7 +6,7 @@ import DepartmentModel from '../database/mysql/models/department.model';
 import MemberModel from '../database/mysql/models/member.model';
 import TeamMemberModel, { TeamMember } from '../database/mysql/models/team.member.model';
 import TeamModel, { Team } from '../database/mysql/models/team.model';
-import MYSQL from '../database/mysql/mysqlService';
+import MYSQL from '../database/mysql/mysql.service';
 
 const genaralRouter = Router();
 

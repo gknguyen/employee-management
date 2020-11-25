@@ -4,7 +4,8 @@ import http from 'http';
 import https from 'https';
 import path from 'path';
 import ENV from '../configs/constants/env';
-import sequelize from '../configs/sequelize';
+import mysql from '../main/database/mysql/mysql.auth';
+import pgsql from '../main/database/pgsql/pgsql.auth';
 import app from './express';
 import { generateDumpData, generateTable } from './initialize.data';
 
@@ -21,16 +22,16 @@ export const HTTPS = https.createServer(ssl, app);
 /**
  * connect to Databases
  * */
-sequelize
-  .authenticate()
-  .then(() => logger(`Connected to database: ${ENV.APP_DB_URL}`))
-  .catch((err: Error) => console.error(`Unable to connect to the database: ${err.toString()}`));
-
-sequelize
+mysql
   .sync({ alter: false, force: false })
   .then(() => generateTable())
-  .then(async () => generateDumpData())
-  .catch((err: Error) => console.error(`Unable to sync with the database: ${err.toString()}`));
+  .then(() => generateDumpData())
+  .catch((err: Error) => err.toString());
+
+pgsql
+  .sync({ alter: false, force: false })
+  .then(() => {}) /** do something */
+  .catch((err: Error) => err.toString());
 
 /**
  * enable server to listen to HTTP requests

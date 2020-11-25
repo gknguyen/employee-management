@@ -3,7 +3,7 @@ import chaiHttp from 'chai-http';
 import STATUS_CODE from 'http-status';
 import { HTTP } from '../app/server';
 import CONSTANTS from '../configs/constants/constants';
-import MYSQL from '../main/database/mysql/mysqlService';
+import MYSQL from '../main/database/mysql/mysql.service';
 
 const TEST_VAR = 'mocha test';
 const TEST_VAR_2 = 'mocha test 2';

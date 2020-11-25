@@ -1,5 +1,5 @@
-import { BuildOptions, DataTypes, Model } from 'sequelize';
-import sequelize from '../../../../configs/sequelize';
+import { DataTypes, Model } from 'sequelize';
+import mysql from '../mysql.auth';
 import CEOModel from './ceo.model';
 
 export interface Department extends Model {
@@ -8,7 +8,7 @@ export interface Department extends Model {
   manager: string;
 }
 
-const DepartmentModel = sequelize.define<Department>(
+const DepartmentModel = mysql.define<Department>(
   'department',
   {
     id: {
