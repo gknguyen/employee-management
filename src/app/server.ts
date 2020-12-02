@@ -22,16 +22,20 @@ export const HTTPS = https.createServer(ssl, app);
 /**
  * connect to Databases
  * */
+mysql.sync({ alter: false, force: false }).catch((err: Error) => err.toString());
 mysql
-  .sync({ alter: false, force: false })
+  .authenticate()
+  .then(() => logger(`Connected to database: ${ENV.MYSQL_CONNECTION}`))
   .then(() => generateTable())
   .then(() => generateDumpData())
-  .catch((err: Error) => err.toString());
+  .catch((err: Error) => logger(`Unable to connect to the database: ${err.toString()}`));
 
+pgsql.sync({ alter: false, force: false }).catch((err: Error) => err.toString());
 pgsql
-  .sync({ alter: false, force: false })
+  .authenticate()
+  .then(() => logger(`Connected to database: ${ENV.PGSQL_CONNECTION}`))
   .then(() => {}) /** do something */
-  .catch((err: Error) => err.toString());
+  .catch((err: Error) => logger(`Unable to connect to the database: ${err.toString()}`));
 
 /**
  * enable server to listen to HTTP requests
