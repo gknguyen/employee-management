@@ -44,7 +44,7 @@
     "jsonwebtoken": "^9.0.2",
     "lodash.times": "^4.3.2",
     "morgan": "^1.10.0",
-    "mysql2": "^2.2.5",
+    "mysql2": "^3.9.8",
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.33.0"
